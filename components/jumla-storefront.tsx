@@ -7,8 +7,10 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  CircleHelp,
   CreditCard,
+  Mail,
+  MapPin,
+  Phone,
   Heart,
   Menu,
   Search,
@@ -249,7 +251,7 @@ function Footer() {
         <div className="footer-about"><BrandMark light /><p>منصة جملة تجمع أفضل الموردين والمنتجات في مكان واحد، لتجعل تجربة التسوق بالجملة أسهل وأسرع.</p><div className="social-links"><a href="#footer" aria-label="منصة إكس">𝕏</a><a href="#footer" aria-label="إنستغرام">◎</a><a href="#footer" aria-label="تيك توك">♪</a><a href="#footer" aria-label="يوتيوب">▶</a></div></div>
         <div className="footer-column"><h2>روابط سريعة</h2><a href="#home">الرئيسية</a><a href="#categories">الأقسام</a><a href="#products">عروض خاصة</a><a href="#footer">من نحن</a><a href="#footer">تواصل معنا</a></div>
         <div className="footer-column"><h2>خدمة العملاء</h2><a href="#footer">مركز المساعدة</a><a href="#footer">سياسة الخصوصية</a><a href="#footer">سياسة الاسترجاع</a><a href="#footer">الشروط والأحكام</a></div>
-        <div className="footer-contact"><h2>تواصل معنا</h2><a href="tel:+96659741858"><UserRound aria-hidden="true" /> +966 59 741 4858</a><a href="mailto:info@jumla.sa"><CircleHelp aria-hidden="true" /> info@jumla.sa</a><p><span aria-hidden="true">⌖</span> جدة، المملكة العربية السعودية</p></div>
+        <div className="footer-contact"><h2>تواصل معنا</h2><a href="tel:+96659741858"><Phone aria-hidden="true" /> +966 59 741 4858</a><a href="mailto:info@jumla.sa"><Mail aria-hidden="true" /> info@jumla.sa</a><p><MapPin aria-hidden="true" /> جدة، المملكة العربية السعودية</p></div>
       </div>
       <div className="footer-bottom shell"><div className="payment-methods" aria-label="طرق الدفع المتاحة"><span>mada</span><span>VISA</span><span>◉</span></div><p>© 2026 منصة جملة. جميع الحقوق محفوظة.</p><a href="#home">جملة.. تسوق بكل سهولة</a></div>
     </footer>

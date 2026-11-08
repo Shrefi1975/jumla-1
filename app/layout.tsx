@@ -1,4 +1,5 @@
 import { Analytics } from '@vercel/analytics/next'
+import '@fontsource/noto-sans-arabic'
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
