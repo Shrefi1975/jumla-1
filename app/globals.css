@@ -58,7 +58,7 @@ main { overflow: hidden; }
 .search-box input::placeholder { color: #98a19c; }
 .search-box button { display: grid; place-items: center; align-self: stretch; width: 48px; border: 0; background: var(--green-800); color: white; }
 .search-box button svg { width: 19px; height: 19px; }
-.header-actions { grid-column: 1; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.header-actions { grid-column: 1; grid-row: 1; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
 .account-link, .cart-button { display: inline-flex; align-items: center; gap: 8px; color: var(--green-900); font-size: 12px; font-weight: 700; }
 .account-link svg, .cart-button > svg { width: 20px; height: 20px; }
 .cart-button { position: relative; border: 0; padding: 7px 0; background: transparent; }

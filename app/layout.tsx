@@ -4,8 +4,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'جملة | منصة التسوق بالجملة',
-  description: 'منصة جملة للتسوق بالجملة من أفضل الموردين. منتجات أصلية، أسعار تنافسية، وتوصيل لجميع مناطق المملكة.',
+  title: 'جملة | منصة البيع بالجملة للمطاعم والتجار',
+  description: 'منصة جملة تربط المطاعم والتجار بالموردين المعتمدين ومنتجات الجملة في السعودية.',
   generator: 'v0.app',
   icons: {
     icon: [
