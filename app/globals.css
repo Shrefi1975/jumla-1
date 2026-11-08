@@ -29,7 +29,7 @@
   --gold: #f5c441;
   --muted: #74817b;
   --surface: #f7f8f7;
-  font-family: "Noto Sans Arabic", Arial, sans-serif;
+  font-family: Arial, "Noto Sans Arabic", sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -47,18 +47,18 @@ main { overflow: hidden; }
 .announcement-inner span, .announcement-inner a { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
 .announcement-inner svg { width: 14px; height: 14px; color: #d6c477; }
 .announcement-inner a { color: #fff; }
-.header-main { display: grid; direction: ltr; grid-template-columns: 180px minmax(200px, 1fr) 230px; align-items: center; gap: 24px; height: 78px; }
-.header-brand { grid-column: 3; justify-self: end; }
+.header-main { display: grid; grid-template-columns: 180px minmax(200px, 1fr) 230px; align-items: center; gap: 24px; height: 78px; }
+.header-brand { grid-column: 3; }
 .brand-mark { display: flex; flex-direction: column; align-items: flex-start; width: fit-content; color: var(--green-900); }
 .brand-word { position: relative; font-size: 44px; line-height: 0.94; font-weight: 900; letter-spacing: -3px; }
 .brand-leaf { position: absolute; width: 12px; height: 7px; top: 4px; left: 8px; transform: rotate(-38deg); border-radius: 100% 0 100% 0; background: #e9b848; }
 .brand-caption { margin-top: 5px; font-size: 9px; font-weight: 700; letter-spacing: 0; }
-.search-box { display: flex; grid-column: 2; grid-row: 1; direction: rtl; align-items: center; height: 43px; border: 1px solid #e8ece9; border-radius: 11px; background: #f8f9f8; overflow: hidden; }
+.search-box { display: flex; align-items: center; height: 43px; border: 1px solid #e8ece9; border-radius: 11px; background: #f8f9f8; overflow: hidden; }
 .search-box input { width: 100%; min-width: 0; height: 100%; padding: 0 18px; border: 0; outline: 0; background: transparent; color: var(--foreground); font-size: 13px; text-align: right; }
 .search-box input::placeholder { color: #98a19c; }
 .search-box button { display: grid; place-items: center; align-self: stretch; width: 48px; border: 0; background: var(--green-800); color: white; }
 .search-box button svg { width: 19px; height: 19px; }
-.header-actions { grid-column: 1; grid-row: 1; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.header-actions { grid-column: 1; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
 .account-link, .cart-button { display: inline-flex; align-items: center; gap: 8px; color: var(--green-900); font-size: 12px; font-weight: 700; }
 .account-link svg, .cart-button > svg { width: 20px; height: 20px; }
 .cart-button { position: relative; border: 0; padding: 7px 0; background: transparent; }
@@ -200,18 +200,18 @@ main { overflow: hidden; }
   .announcement-inner { justify-content: center; }
   .announcement-inner span, .announcement-inner a { display: none; }
   .announcement-inner span:first-child { display: inline-flex; }
-  .header-main { position: relative; grid-template-columns: 42px 42px 1fr auto; gap: 8px; height: 67px; }
+  .header-main { position: relative; grid-template-columns: 42px 1fr auto; gap: 10px; height: 67px; }
   .mobile-menu-button { display: grid; grid-column: 1; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 8px; background: #f1f6f3; color: var(--green-800); }
   .mobile-menu-button svg { width: 20px; height: 20px; }
-  .header-brand { grid-column: 4; grid-row: 1; }
+  .header-brand { grid-column: 3; grid-row: 1; }
   .brand-word { font-size: 36px; }
   .brand-caption { font-size: 7px; }
-  .header-actions { grid-column: 2; grid-row: 1; justify-content: flex-start; }
+  .header-actions { grid-column: 1 / 2; grid-row: 1; justify-content: flex-start; }
   .account-link { display: none; }
   .cart-button { font-size: 0; }
   .cart-button > svg { width: 21px; height: 21px; }
   .cart-count { right: 12px; }
-  .search-box { grid-column: 1 / 5; grid-row: 2; height: 40px; margin-bottom: 10px; }
+  .search-box { grid-column: 1 / 4; grid-row: 2; height: 40px; margin-bottom: 10px; }
   .header-main { height: 118px; align-content: start; padding-top: 10px; }
   .main-nav { display: none; }
   .main-nav.nav-open { display: block; position: absolute; z-index: 20; right: 14px; left: 14px; margin-top: -1px; border: 1px solid #e5ebe7; border-radius: 0 0 12px 12px; box-shadow: 0 14px 24px rgba(0,0,0,.12); }

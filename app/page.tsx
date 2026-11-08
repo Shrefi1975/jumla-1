@@ -1,6 +1,6 @@
-import { StorefrontRouter } from './storefront-router'
+import { JumlaStorefront } from '@/components/jumla-storefront'
 
 export default function Page() {
-  return <StorefrontRouter />
+  return <JumlaStorefront />
 }
 
