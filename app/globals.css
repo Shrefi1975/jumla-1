@@ -162,10 +162,10 @@ main { overflow: hidden; }
 .brand-strip { display: flex; align-items: center; gap: 10px; overflow: hidden; padding-bottom: 4px; }
 .brand-marquee { flex: 1 1 auto; min-width: 0; overflow: hidden; }
 .brand-track { display: flex; width: max-content; direction: ltr; animation: brand-marquee 32s linear infinite; will-change: transform; }
-.brand-group { display: flex; flex: none; gap: 8px; padding-inline-end: 8px; }
-.brand-tile { display: grid; flex: 0 0 84px; place-items: center; min-width: 84px; height: 61px; border: 1px solid #edf0ed; border-radius: 9px; background: #fff; color: #344d42; font-size: 17px; font-weight: 900; letter-spacing: -.4px; }
+.brand-group { display: flex; flex: none; gap: 4px; padding-inline-end: 4px; }
+.brand-tile { display: grid; flex: 0 0 72px; place-items: center; min-width: 72px; height: 61px; border: 1px solid #edf0ed; border-radius: 9px; background: #fff; color: #344d42; font-size: 16px; font-weight: 900; letter-spacing: -.4px; }
 .brand-strip:hover .brand-track, .brand-strip:focus-within .brand-track { animation-play-state: paused; }
-@keyframes brand-marquee { to { transform: translateX(-50%); } }
+@keyframes brand-marquee { to { transform: translateX(-33.333333%); } }
 @media (prefers-reduced-motion: reduce) {
   .brand-track { animation: none; transform: none; }
   .brand-marquee { overflow-x: auto; }

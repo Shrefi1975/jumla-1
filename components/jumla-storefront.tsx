@@ -262,6 +262,7 @@ function Brands() {
           <div className="brand-track">
             <BrandGroup />
             <BrandGroup decorative />
+            <BrandGroup decorative />
           </div>
         </div>
         <span className="brand-arrow" aria-hidden="true"><ChevronLeft /></span>
