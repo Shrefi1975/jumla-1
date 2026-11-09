@@ -2,12 +2,14 @@
 
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
-import { CatalogImage, categories, products, ProductCard, type Product } from '@/components/jumla-storefront'
+import { CatalogImage, ProductCard, type Product } from '@/components/jumla-storefront'
+import { useMarketplaceCatalog } from '@/lib/marketplace'
 
-const packagingUnits = ['الكل', 'كرتون', 'صندوق', 'كيس']
+const packagingUnits = ['الكل', 'كرتون', 'شد', 'كيس', 'صندوق']
 
 export function CategoriesPage({ onAdd }: { onAdd: (product: Product, quantity?: number) => void }) {
   const [searchParams, setSearchParams] = useSearchParams()
+  const { categories, products, isLoading, error } = useMarketplaceCatalog()
   const search = searchParams.get('search') ?? ''
   const selectedCategory = searchParams.get('category') ?? 'all'
   const selectedUnit = searchParams.get('unit') ?? 'all'
@@ -20,9 +22,10 @@ export function CategoriesPage({ onAdd }: { onAdd: (product: Product, quantity?:
   }
 
   const visibleProducts = products.filter((product) => {
-    const matchesSearch = `${product.name} ${product.description} ${product.supplier}`.includes(search.trim())
+    const searchableText = `${product.name} ${product.description} ${product.supplier}`.toLocaleLowerCase('ar')
+    const matchesSearch = searchableText.includes(search.trim().toLocaleLowerCase('ar'))
     const matchesCategory = selectedCategory === 'all' || product.categoryId === selectedCategory
-    const matchesUnit = selectedUnit === 'all' || product.packagingUnit === selectedUnit
+    const matchesUnit = selectedUnit === 'all' || product.packagingUnit.trim().startsWith(selectedUnit)
     return matchesSearch && matchesCategory && matchesUnit
   })
 
@@ -45,7 +48,7 @@ export function CategoriesPage({ onAdd }: { onAdd: (product: Product, quantity?:
           </div>
           <button className={`filter-chip${selectedCategory === 'all' ? ' is-selected' : ''}`} type="button" aria-pressed={selectedCategory === 'all'} onClick={() => updateFilter('category', 'all')}>كل الأقسام</button>
         </div>
-        <div className="catalog-category-grid">
+        {isLoading ? <p className="no-results" role="status">جارٍ تحميل الأقسام...</p> : error ? <p className="no-results" role="status">تعذر تحميل الأقسام حالياً.</p> : <div className="catalog-category-grid">
           {categories.map((category) => {
             const itemCount = products.filter((product) => product.categoryId === category.id).length
             const isSelected = selectedCategory === category.id
@@ -56,7 +59,7 @@ export function CategoriesPage({ onAdd }: { onAdd: (product: Product, quantity?:
               </button>
             )
           })}
-        </div>
+        </div>}
       </section>
 
       <section className="shell catalog-listing" aria-labelledby="catalog-products-title">
@@ -84,7 +87,7 @@ export function CategoriesPage({ onAdd }: { onAdd: (product: Product, quantity?:
           </div>
         </div>
 
-        {visibleProducts.length > 0 ? (
+        {isLoading ? <p className="no-results" role="status">جارٍ تحميل المنتجات...</p> : error ? <p className="no-results" role="status">تعذر تحميل المنتجات حالياً. حاول تحديث الصفحة.</p> : visibleProducts.length > 0 ? (
           <div className="product-grid catalog-product-grid">
             {visibleProducts.map((product) => <ProductCard key={product.id} product={product} onAdd={onAdd} />)}
           </div>

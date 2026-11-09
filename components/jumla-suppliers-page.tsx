@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
 import { ArrowLeft, Factory, MapPin, PackageCheck, Truck } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -11,22 +10,6 @@ const supplierGroups = [
 ]
 
 export function SuppliersPage() {
-  const [registrationUrl, setRegistrationUrl] = useState('')
-
-  function handleRegistration(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    const message = [
-      'طلب تسجيل مورد جديد في منصة جملة',
-      `اسم المنشأة: ${formData.get('company')}`,
-      `اسم مسؤول التواصل: ${formData.get('contact')}`,
-      `رقم الجوال: ${formData.get('phone')}`,
-      `التخصص: ${formData.get('specialty')}`,
-      `المدينة: ${formData.get('city')}`,
-    ].join('\n')
-    setRegistrationUrl(`https://wa.me/966597414858?text=${encodeURIComponent(message)}`)
-  }
-
   return (
     <main className="route-page suppliers-page" dir="rtl">
       <section className="route-hero shell">
@@ -55,18 +38,18 @@ export function SuppliersPage() {
         <div className="registration-intro">
           <p className="page-kicker">انضم إلى جملة</p>
           <h2 id="supplier-registration-title">هل أنت مورّد أو مصنع؟</h2>
-          <p>أرسل بيانات منشأتك وفريق التوريد سيتواصل معك عبر واتساب لاستكمال التسجيل.</p>
-          <a className="supplier-whatsapp" href="https://wa.me/966597414858" target="_blank" rel="noreferrer">0597414858</a>
+          <p>أنشئ حساب منشأتك وقدّم طلب الانضمام من بوابة الموردين. سيبقى الحساب قيد المراجعة حتى اعتماده.</p>
+          <a className="supplier-join-login" href="/auth/login?next=%2Fsupplier%2Fdashboard">لديك حساب؟ تسجيل الدخول</a>
         </div>
-        <form className="supplier-form" onSubmit={handleRegistration}>
-          <label>اسم المنشأة<input name="company" autoComplete="organization" required placeholder="اسم الشركة أو المصنع" /></label>
-          <label>مسؤول التواصل<input name="contact" autoComplete="name" required placeholder="الاسم الكامل" /></label>
-          <label>رقم الجوال<input name="phone" type="tel" autoComplete="tel" inputMode="tel" required placeholder="05xxxxxxxx" /></label>
-          <label>التخصص<select name="specialty" defaultValue="" required><option value="" disabled>اختر مجال التوريد</option><option>مواد غذائية</option><option>مجمدات وألبان</option><option>ورقيات وتغليف</option><option>منظفات وعناية</option><option>مستلزمات مطاعم</option><option>مجال آخر</option></select></label>
-          <label className="form-full-width">المدينة<input name="city" autoComplete="address-level2" required placeholder="مثال: جدة" /></label>
-          <button className="primary-action form-full-width" type="submit">إرسال طلب التسجيل</button>
-          {registrationUrl && <a className="whatsapp-submit form-full-width" href={registrationUrl} target="_blank" rel="noreferrer">فتح طلب التسجيل في واتساب</a>}
-        </form>
+        <div className="supplier-form supplier-join-panel">
+          <p className="page-kicker">خطوات الانضمام</p>
+          <ul>
+            <li>أكمل بيانات مسؤول التواصل والمنشأة.</li>
+            <li>أكّد بريدك الإلكتروني لتفعيل الحساب.</li>
+            <li>بعد اعتماد الطلب، أضف منتجاتك وأسعار الجملة.</li>
+          </ul>
+          <a className="primary-action form-full-width" href="/auth/sign-up">إنشاء حساب مورد <ArrowLeft aria-hidden="true" /></a>
+        </div>
       </section>
     </main>
   )

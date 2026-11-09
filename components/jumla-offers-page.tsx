@@ -2,9 +2,11 @@
 
 import { BadgePercent, Truck } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { ProductCard, products, type Product } from '@/components/jumla-storefront'
+import { ProductCard, type Product } from '@/components/jumla-storefront'
+import { useMarketplaceCatalog } from '@/lib/marketplace'
 
 export function OffersPage({ onAdd }: { onAdd: (product: Product, quantity?: number) => void }) {
+  const { products, isLoading, error } = useMarketplaceCatalog()
   const discountedProducts = products.filter((product) => product.discountPercent > 0)
 
   return (
@@ -21,7 +23,7 @@ export function OffersPage({ onAdd }: { onAdd: (product: Product, quantity?: num
           <div><p className="page-kicker">لفترة محدودة</p><h2 id="offers-title">الصفقات المتاحة</h2></div>
           <Link className="text-button" to="/categories">تصفح جميع المنتجات</Link>
         </div>
-        <div className="product-grid catalog-product-grid">
+        {isLoading ? <p className="no-results" role="status">جارٍ تحميل العروض...</p> : error ? <p className="no-results" role="status">تعذر تحميل العروض حالياً.</p> : discountedProducts.length === 0 ? <p className="no-results">لا توجد عروض منشورة حالياً.</p> : <div className="product-grid catalog-product-grid">
           {discountedProducts.map((product) => (
             <div className="offer-card-wrap" key={product.id}>
               <span className="offer-ribbon">خصم {product.discountPercent}٪</span>
@@ -29,7 +31,7 @@ export function OffersPage({ onAdd }: { onAdd: (product: Product, quantity?: num
               <p className="bulk-note">سعر جملة خاص على {product.pack}</p>
             </div>
           ))}
-        </div>
+        </div>}
       </section>
     </main>
   )

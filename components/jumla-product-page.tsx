@@ -3,26 +3,32 @@
 import { useState } from 'react'
 import { CalendarDays, Check, Minus, PackageCheck, Plus, ShoppingBasket, Store, Truck } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
-import { CatalogImage, categories, formatSAR, products, type Product } from '@/components/jumla-storefront'
+import { CatalogImage, formatSAR, type Product } from '@/components/jumla-storefront'
+import { useMarketplaceCatalog } from '@/lib/marketplace'
 
 export function ProductDetailPage({ onAdd }: { onAdd: (product: Product, quantity?: number) => void }) {
   const { id } = useParams()
-  const product = products.find((item) => String(item.id) === id)
+  const { products, categories, isLoading, error } = useMarketplaceCatalog()
+  const product = products.find((item) => item.id === id)
   const [quantity, setQuantity] = useState(1)
   const [added, setAdded] = useState(false)
 
-  if (!product) {
+  if (isLoading) {
+    return <main className="route-page shell route-empty" dir="rtl"><p role="status">جارٍ تحميل بيانات المنتج...</p></main>
+  }
+
+  if (error || !product) {
     return (
       <main className="route-page shell route-empty" dir="rtl">
-        <h1>لم نعثر على هذا المنتج</h1>
-        <p>قد يكون المنتج غير متاح حالياً.</p>
+        <h1>{error ? 'تعذر تحميل بيانات المنتج' : 'لم نعثر على هذا المنتج'}</h1>
+        <p>{error ? 'حاول تحديث الصفحة بعد قليل.' : 'قد يكون المنتج غير متاح حالياً.'}</p>
         <Link className="primary-action" to="/categories">العودة إلى الأقسام</Link>
       </main>
     )
   }
 
   const category = categories.find((item) => item.id === product.categoryId)
-  const expiryDate = new Intl.DateTimeFormat('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(`${product.expiryDate}T00:00:00`))
+  const expiryDate = product.expiryDate ? new Intl.DateTimeFormat('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(`${product.expiryDate}T00:00:00`)) : 'غير محدد'
 
   function addProduct() {
     if (!product) return
@@ -41,7 +47,7 @@ export function ProductDetailPage({ onAdd }: { onAdd: (product: Product, quantit
       <div className="product-detail-grid">
         <div className="detail-image-panel">
           {product.discountPercent > 0 && <span className="detail-discount">خصم {product.discountPercent}٪ للكميات</span>}
-          <CatalogImage position={product.image} className="detail-product-image" alt={`صورة ${product.name}`} />
+          <CatalogImage position={product.image} imageUrl={product.imageUrl} className="detail-product-image" alt={`صورة ${product.name}`} />
         </div>
 
         <section className="product-detail-copy" aria-labelledby="product-title">

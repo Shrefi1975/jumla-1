@@ -13,8 +13,8 @@ type CartContextValue = {
   cartCount: number
   subtotal: number
   addToCart: (product: Product, quantity?: number) => void
-  updateQuantity: (productId: number, quantity: number) => void
-  removeFromCart: (productId: number) => void
+  updateQuantity: (productId: string, quantity: number) => void
+  removeFromCart: (productId: string) => void
 }
 
 const CartContext = createContext<CartContextValue | null>(null)
@@ -36,14 +36,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
-  const updateQuantity = useCallback((productId: number, quantity: number) => {
+  const updateQuantity = useCallback((productId: string, quantity: number) => {
     const safeQuantity = Math.max(1, Math.floor(quantity) || 1)
     setLines((current) => current.map((line) => line.product.id === productId
-      ? { ...line, quantity: safeQuantity }
+      ? { ...line, quantity: Math.max(line.product.minimumOrderQuantity, safeQuantity) }
       : line))
   }, [])
 
-  const removeFromCart = useCallback((productId: number) => {
+  const removeFromCart = useCallback((productId: string) => {
     setLines((current) => current.filter((line) => line.product.id !== productId))
   }, [])
 

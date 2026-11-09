@@ -20,58 +20,9 @@ import {
   UserRound,
   X,
 } from 'lucide-react'
+import { getWhatsAppUrl, useMarketplaceCatalog, type Category, type Product } from '@/lib/marketplace'
 
-export type Category = {
-  id: string
-  name: string
-  count: string
-  items: string
-  image: [number, number]
-  detail: string
-}
-
-export type Product = {
-  id: number
-  name: string
-  description: string
-  pack: string
-  packagingUnit: string
-  categoryId: string
-  wholesalePrice: number
-  retailPrice: number
-  minimumOrderQuantity: number
-  expiryDate: string
-  supplier: string
-  discountPercent: number
-  badge: string
-  image: [number, number]
-}
-
-export const categories: Category[] = [
-  { id: 'frozen', name: 'المجمدات', count: '٠٢', items: 'منتجات', image: [0, 0], detail: 'دواجن، أسماك، خضروات ومخبوزات مجمدة' },
-  { id: 'paper', name: 'الورقيات', count: '٠١', items: 'منتجات', image: [0, 3], detail: 'مناديل الوجه، رولات المطبخ وورق السفرة' },
-  { id: 'plastic', name: 'البلاستيك', count: '٠١', items: 'منتجات', image: [0, 2], detail: 'أدوات الاستخدام الواحد ومواد التغليف' },
-  { id: 'cleaning', name: 'المنظفات', count: '٠١', items: 'منتجات', image: [0, 1], detail: 'منظفات المنزل، المطهرات والعناية' },
-  { id: 'food', name: 'المواد الغذائية', count: '٠٢', items: 'منتجات', image: [0, 4], detail: 'الأرز، السكر، الزيوت، المعلبات والمزيد' },
-  { id: 'drinks', name: 'المشروبات', count: '٠١', items: 'منتجات', image: [1, 3], detail: 'مياه وعصائر ومشروبات بكميات تجارية' },
-  { id: 'dairy', name: 'الألبان والأجبان', count: '٠١', items: 'منتجات', image: [1, 2], detail: 'منتجات الألبان والحليب طويل الأجل' },
-  { id: 'restaurant', name: 'مستلزمات المطاعم', count: '٠١', items: 'منتجات', image: [1, 4], detail: 'عبوات وأدوات تقديم وتجهيز الطعام' },
-  { id: 'personal-care', name: 'العناية الشخصية', count: '٠١', items: 'منتجات', image: [1, 1], detail: 'منتجات العناية اليومية للعائلة' },
-]
-
-export const products: Product[] = [
-  { id: 1, name: 'زيت زيتون', description: 'زيت نباتي نقي · ١ لتر', pack: 'كرتون ١٢ حبة', packagingUnit: 'كرتون', categoryId: 'food', wholesalePrice: 58, retailPrice: 69, minimumOrderQuantity: 1, expiryDate: '2027-12-31', supplier: 'مورد المواد الغذائية', discountPercent: 0, badge: 'الأكثر مبيعاً', image: [0, 5] },
-  { id: 2, name: 'مسحوق غسيل', description: 'قوة تنظيف فائقة · ٢.٥ كجم', pack: 'كرتون ٤ حبات', packagingUnit: 'كرتون', categoryId: 'cleaning', wholesalePrice: 95, retailPrice: 119, minimumOrderQuantity: 1, expiryDate: '2028-06-30', supplier: 'مورد المنظفات والعناية المنزلية', discountPercent: 20, badge: 'خصم ٢٠٪', image: [1, 1] },
-  { id: 3, name: 'مناديل وجه', description: 'مناديل ناعمة · ١٠ علب', pack: 'صندوق ٤٨ علبة', packagingUnit: 'صندوق', categoryId: 'paper', wholesalePrice: 42, retailPrice: 55, minimumOrderQuantity: 1, expiryDate: '2028-12-31', supplier: 'مورد الورقيات', discountPercent: 12, badge: 'عرض كميات', image: [0, 3] },
-  { id: 4, name: 'دجاج مجمد', description: 'دجاج طازج مجمد · ١٠٠٠ جم', pack: 'كرتون ١٠ حبات', packagingUnit: 'كرتون', categoryId: 'frozen', wholesalePrice: 95, retailPrice: 120, minimumOrderQuantity: 1, expiryDate: '2027-08-15', supplier: 'مورد المنتجات المجمدة', discountPercent: 0, badge: '', image: [0, 0] },
-  { id: 5, name: 'بطاطس مقلية', description: 'بطاطس مقرمشة · ٢.٥ كجم', pack: 'كرتون ٤ أكياس', packagingUnit: 'كرتون', categoryId: 'frozen', wholesalePrice: 22, retailPrice: 30, minimumOrderQuantity: 1, expiryDate: '2027-10-31', supplier: 'مورد المنتجات المجمدة', discountPercent: 0, badge: '', image: [0, 4] },
-  { id: 6, name: 'أرز بسمتي', description: 'أرز بسمتي فاخر · ١٠ كجم', pack: 'كيس ١٠ كجم', packagingUnit: 'كيس', categoryId: 'food', wholesalePrice: 148, retailPrice: 175, minimumOrderQuantity: 1, expiryDate: '2027-09-30', supplier: 'مورد المواد الغذائية', discountPercent: 10, badge: 'خصم ١٠٪', image: [1, 0] },
-  { id: 7, name: 'حليب طويل الأجل', description: 'حليب كامل الدسم · ١ لتر', pack: 'كرتون ١٢ عبوة', packagingUnit: 'كرتون', categoryId: 'dairy', wholesalePrice: 108, retailPrice: 132, minimumOrderQuantity: 1, expiryDate: '2027-05-20', supplier: 'مورد الألبان', discountPercent: 0, badge: '', image: [1, 2] },
-  { id: 8, name: 'مياه شرب', description: 'مياه نقية · ٣٣٠ مل', pack: 'صندوق ٤٠ عبوة', packagingUnit: 'صندوق', categoryId: 'drinks', wholesalePrice: 45, retailPrice: 58, minimumOrderQuantity: 1, expiryDate: '2028-05-31', supplier: 'مورد المشروبات', discountPercent: 0, badge: '', image: [1, 3] },
-  { id: 9, name: 'أطباق بلاستيكية', description: 'أطباق للاستخدام الواحد · ٥٠ حبة', pack: 'كرتون ٢٠ عبوة', packagingUnit: 'كرتون', categoryId: 'plastic', wholesalePrice: 36, retailPrice: 49, minimumOrderQuantity: 1, expiryDate: '2030-12-31', supplier: 'مورد مواد التغليف', discountPercent: 0, badge: '', image: [0, 2] },
-  { id: 10, name: 'عبوات حفظ الطعام', description: 'عبوات عملية للمطاعم · ٧٥٠ مل', pack: 'كرتون ١٠٠ عبوة', packagingUnit: 'كرتون', categoryId: 'restaurant', wholesalePrice: 82, retailPrice: 104, minimumOrderQuantity: 1, expiryDate: '2030-12-31', supplier: 'مورد مستلزمات المطاعم', discountPercent: 15, badge: 'عرض كميات', image: [1, 5] },
-  { id: 11, name: 'شامبو يومي', description: 'تركيبة لطيفة · ٤٠٠ مل', pack: 'كرتون ١٢ عبوة', packagingUnit: 'كرتون', categoryId: 'personal-care', wholesalePrice: 54, retailPrice: 68, minimumOrderQuantity: 1, expiryDate: '2028-10-31', supplier: 'مورد العناية الشخصية', discountPercent: 0, badge: '', image: [1, 1] },
-]
+export type { Category, Product } from '@/lib/marketplace'
 
 export const brands = ['المراعي', 'Tide', 'Persil', 'LUX', 'Nestlé', 'Sadia', 'فانيس', 'PINAR', 'Maggi']
 const audiences = ['الأفراد', 'التجار', 'الشركات', 'المطاعم والفنادق']
@@ -80,7 +31,7 @@ export function formatSAR(value: number) {
   return new Intl.NumberFormat('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)
 }
 
-export function CatalogImage({ position, className = '', alt }: { position: [number, number]; className?: string; alt?: string }) {
+export function CatalogImage({ position, className = '', alt, imageUrl }: { position: [number, number]; className?: string; alt?: string; imageUrl?: string }) {
   const [row, column] = position
   const horizontalPositions = ['0%', '20%', '40%', '60%', '80%', '100%']
   return (
@@ -89,7 +40,11 @@ export function CatalogImage({ position, className = '', alt }: { position: [num
       aria-label={alt}
       className={`catalog-image ${className}`}
       role={alt ? 'img' : undefined}
-      style={{ backgroundPosition: `${horizontalPositions[column]} ${row === 0 ? '0%' : '100%'}` }}
+      style={{
+        backgroundPosition: imageUrl ? 'center' : `${horizontalPositions[column]} ${row === 0 ? '0%' : '100%'}`,
+        backgroundImage: imageUrl ? `url("${imageUrl}")` : undefined,
+        backgroundSize: imageUrl ? 'cover' : undefined,
+      }}
     />
   )
 }
@@ -144,7 +99,7 @@ export function Header({ cartCount }: { cartCount: number }) {
           <span><Truck aria-hidden="true" /> توصيل مباشر من المورد</span>
           <span><ShieldCheck aria-hidden="true" /> ضمان وموثوقية</span>
           <span><BadgePercent aria-hidden="true" /> أسعار خاصة للتجار والشركات</span>
-          <Link to="/suppliers#register">تسجيل مورد جديد <span aria-hidden="true">＋</span></Link>
+          <a href="/auth/sign-up">تسجيل مورد جديد <span aria-hidden="true">＋</span></a>
           <Link to="/contact"><UserRound aria-hidden="true" /> تواصل معنا</Link>
         </div>
       </div>
@@ -214,21 +169,24 @@ export function SectionHeading({ title, action }: { title: string; action?: stri
 }
 
 function Categories() {
+  const { categories, isLoading, error } = useMarketplaceCatalog()
   return (
     <section className="categories-section shell" id="categories" aria-labelledby="categories-title">
       <SectionHeading title="أقسام جملة الرئيسية" />
-      <div className="category-grid">
-        {categories.slice(0, 5).map((category) => (
-          <article className="category-card" key={category.id}>
-            <Link to={`/categories?category=${category.id}`} className="category-link" aria-label={`تصفح قسم ${category.name}`}>
-              <CatalogImage position={category.image} className="category-art" alt={`صورة قسم ${category.name}`} />
-              <div className="category-title-row"><h3>{category.name}</h3><span className="category-count">{category.count}</span></div>
-              <p>{category.detail}</p>
-              <span className="category-action">تصفح القسم <ArrowLeft aria-hidden="true" /></span>
-            </Link>
-          </article>
-        ))}
-      </div>
+      {isLoading ? <p className="no-results" role="status">جارٍ تحميل الأقسام...</p> : error ? <p className="no-results" role="status">تعذر تحميل الأقسام حالياً.</p> : (
+        <div className="category-grid">
+          {categories.slice(0, 5).map((category) => (
+            <article className="category-card" key={category.id}>
+              <Link to={`/categories?category=${category.id}`} className="category-link" aria-label={`تصفح قسم ${category.name}`}>
+                <CatalogImage position={category.image} className="category-art" alt={`صورة قسم ${category.name}`} />
+                <div className="category-title-row"><h3>{category.name}</h3><span className="category-count">{category.count}</span></div>
+                <p>{category.detail}</p>
+                <span className="category-action">تصفح القسم <ArrowLeft aria-hidden="true" /></span>
+              </Link>
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   )
 }
@@ -256,14 +214,14 @@ function Benefits() {
 export function ProductCard({ product, isFavorite = false, onFavorite, onAdd }: {
   product: Product
   isFavorite?: boolean
-  onFavorite?: (id: number) => void
+  onFavorite?: (id: string) => void
   onAdd: (product: Product, quantity?: number) => void
 }) {
   return (
     <article className="product-card">
       <div className="product-image-wrap">
         <Link to={`/product/${product.id}`} className="product-image-link" aria-label={`عرض تفاصيل ${product.name}`}>
-          <CatalogImage position={product.image} className="product-image" alt={`صورة ${product.name}`} />
+          <CatalogImage position={product.image} imageUrl={product.imageUrl} className="product-image" alt={`صورة ${product.name}`} />
         </Link>
         {onFavorite && (
           <button className={`favorite-button${isFavorite ? ' is-favorite' : ''}`} type="button" aria-label={isFavorite ? `إزالة ${product.name} من المفضلة` : `إضافة ${product.name} للمفضلة`} aria-pressed={isFavorite} onClick={() => onFavorite(product.id)}>
@@ -284,18 +242,21 @@ export function ProductCard({ product, isFavorite = false, onFavorite, onAdd }: 
 }
 
 function FeaturedProducts({ onAdd }: { onAdd: (product: Product, quantity?: number) => void }) {
-  const [favorites, setFavorites] = useState<number[]>([])
+  const [favorites, setFavorites] = useState<string[]>([])
+  const { products, isLoading, error } = useMarketplaceCatalog()
 
-  function toggleFavorite(id: number) {
+  function toggleFavorite(id: string) {
     setFavorites((current) => current.includes(id) ? current.filter((favorite) => favorite !== id) : [...current, id])
   }
 
   return (
     <section className="products-section shell" id="products" aria-labelledby="products-title">
       <SectionHeading title="عروض مميزة" action="عرض الكل" />
-      <div className="product-grid">
-        {products.slice(0, 5).map((product) => <ProductCard key={product.id} product={product} isFavorite={favorites.includes(product.id)} onFavorite={toggleFavorite} onAdd={onAdd} />)}
-      </div>
+      {isLoading ? <p className="no-results" role="status">جارٍ تحميل المنتجات...</p> : error ? <p className="no-results" role="status">تعذر تحميل المنتجات حالياً.</p> : products.length === 0 ? <p className="no-results">ستظهر المنتجات المنشورة هنا قريباً.</p> : (
+        <div className="product-grid">
+          {products.slice(0, 5).map((product) => <ProductCard key={product.id} product={product} isFavorite={favorites.includes(product.id)} onFavorite={toggleFavorite} onAdd={onAdd} />)}
+        </div>
+      )}
     </section>
   )
 }
@@ -332,13 +293,17 @@ export function Brands() {
 }
 
 export function Footer() {
+  const { settings } = useMarketplaceCatalog()
+  const adminWhatsapp = settings?.admin_whatsapp ?? ''
+  const telephone = adminWhatsapp.replace(/[^+\d]/g, '')
+
   return (
     <footer className="site-footer" id="footer">
       <div className="footer-main shell">
         <div className="footer-about"><BrandMark light /><p>منصة جملة تجمع أفضل الموردين والمنتجات في مكان واحد، لتجعل تجربة التسوق بالجملة أسهل وأسرع.</p><div className="social-links"><a href="#footer" aria-label="منصة إكس">𝕏</a><a href="#footer" aria-label="إنستغرام">◎</a><a href="#footer" aria-label="تيك توك">♪</a><a href="#footer" aria-label="يوتيوب">▶</a></div></div>
         <div className="footer-column"><h2>روابط سريعة</h2><Link to="/">الرئيسية</Link><Link to="/categories">الأقسام</Link><Link to="/offers">عروض خاصة</Link><Link to="/suppliers">الموردون</Link><Link to="/about">من نحن</Link><Link to="/contact">تواصل معنا</Link></div>
         <div className="footer-column"><h2>خدمة العملاء</h2><Link to="/contact">مركز المساعدة</Link><Link to="/contact">سياسة الخصوصية</Link><Link to="/contact">سياسة الاسترجاع</Link><Link to="/contact">الشروط والأحكام</Link><Link to="/cart">السلة والدفع</Link></div>
-        <div className="footer-contact"><h2>تواصل معنا</h2><a href="tel:+966597414858"><UserRound aria-hidden="true" /> 0597414858</a><a href="https://wa.me/966597414858" target="_blank" rel="noreferrer"><CircleHelp aria-hidden="true" /> واتساب الدعم</a><p><span aria-hidden="true">⌖</span> مستودع جملة، جدة، المملكة العربية السعودية</p></div>
+        <div className="footer-contact"><h2>تواصل معنا</h2>{adminWhatsapp ? <><a href={`tel:${telephone}`}><UserRound aria-hidden="true" /> <bdi dir="ltr">{adminWhatsapp}</bdi></a><a href={getWhatsAppUrl(adminWhatsapp)} target="_blank" rel="noreferrer"><CircleHelp aria-hidden="true" /> واتساب الدعم</a></> : <p>بيانات التواصل غير متاحة حالياً.</p>}<p><span aria-hidden="true">⌖</span> مستودع جملة، جدة، المملكة العربية السعودية</p></div>
       </div>
       <div className="footer-bottom shell"><div className="payment-methods" aria-label="طرق الدفع المتاحة"><span>mada</span><span>VISA</span><span>◉</span></div><p>© 2026 منصة جملة. جميع الحقوق محفوظة.</p><Link to="/">جملة.. تسوق بكل سهولة</Link></div>
     </footer>
