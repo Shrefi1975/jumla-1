@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Noto_Sans_Arabic } from 'next/font/google'
 import './globals.css'
+import './jumla-pages.css'
 
 const arabicFont = Noto_Sans_Arabic({
   subsets: ['arabic'],

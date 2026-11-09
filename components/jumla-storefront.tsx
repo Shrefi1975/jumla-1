@@ -1,6 +1,7 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
   BadgePercent,
@@ -20,32 +21,74 @@ import {
   X,
 } from 'lucide-react'
 
-const categories = [
-  { name: 'المجمدات', count: '٥', items: 'منتجات', image: [0, 0], detail: 'دواجن، أسماك، خضروات ومخبوزات مجمدة' },
-  { name: 'الورقيات', count: '٤', items: 'منتجات', image: [0, 3], detail: 'مناديل الوجه، رولات المطبخ وورق السفرة' },
-  { name: 'البلاستيك', count: '٣', items: 'منتجات', image: [0, 2], detail: 'أدوات الاستخدام الواحد ومواد التغليف' },
-  { name: 'المنظفات', count: '٢', items: 'منتجات', image: [0, 1], detail: 'منظفات المنزل، المطهرات والعناية' },
-  { name: 'المواد الغذائية', count: '١', items: 'منتجات', image: [0, 4], detail: 'الأرز، السكر، الزيوت، المعلبات والمزيد' },
+export type Category = {
+  id: string
+  name: string
+  count: string
+  items: string
+  image: [number, number]
+  detail: string
+}
+
+export type Product = {
+  id: number
+  name: string
+  description: string
+  pack: string
+  packagingUnit: string
+  categoryId: string
+  wholesalePrice: number
+  retailPrice: number
+  minimumOrderQuantity: number
+  expiryDate: string
+  supplier: string
+  discountPercent: number
+  badge: string
+  image: [number, number]
+}
+
+export const categories: Category[] = [
+  { id: 'frozen', name: 'المجمدات', count: '٠٢', items: 'منتجات', image: [0, 0], detail: 'دواجن، أسماك، خضروات ومخبوزات مجمدة' },
+  { id: 'paper', name: 'الورقيات', count: '٠١', items: 'منتجات', image: [0, 3], detail: 'مناديل الوجه، رولات المطبخ وورق السفرة' },
+  { id: 'plastic', name: 'البلاستيك', count: '٠١', items: 'منتجات', image: [0, 2], detail: 'أدوات الاستخدام الواحد ومواد التغليف' },
+  { id: 'cleaning', name: 'المنظفات', count: '٠١', items: 'منتجات', image: [0, 1], detail: 'منظفات المنزل، المطهرات والعناية' },
+  { id: 'food', name: 'المواد الغذائية', count: '٠٢', items: 'منتجات', image: [0, 4], detail: 'الأرز، السكر، الزيوت، المعلبات والمزيد' },
+  { id: 'drinks', name: 'المشروبات', count: '٠١', items: 'منتجات', image: [1, 3], detail: 'مياه وعصائر ومشروبات بكميات تجارية' },
+  { id: 'dairy', name: 'الألبان والأجبان', count: '٠١', items: 'منتجات', image: [1, 2], detail: 'منتجات الألبان والحليب طويل الأجل' },
+  { id: 'restaurant', name: 'مستلزمات المطاعم', count: '٠١', items: 'منتجات', image: [1, 4], detail: 'عبوات وأدوات تقديم وتجهيز الطعام' },
+  { id: 'personal-care', name: 'العناية الشخصية', count: '٠١', items: 'منتجات', image: [1, 1], detail: 'منتجات العناية اليومية للعائلة' },
 ]
 
-const products = [
-  { id: 1, name: 'زيت زيتون', description: 'زيت نباتي نقي · ١ لتر', pack: 'كرتون ١٢ حبة', price: '٥٨.٠٠', badge: 'الأكثر مبيعاً', image: [0, 5] },
-  { id: 2, name: 'مسحوق غسيل', description: 'قوة تنظيف فائقة · ٢.٥ كجم', pack: 'كرتون ٤ حبات', price: '٩٥.٠٠', badge: 'خصم خاص', image: [1, 1] },
-  { id: 3, name: 'مناديل وجه', description: 'مناديل ناعمة · ١٠ علب', pack: 'كرتون ٤٨ علبة', price: '٤٢.٠٠', badge: '', image: [0, 3] },
-  { id: 4, name: 'دجاج مجمد', description: 'دجاج طازج مجمد · ١٠٠٠ جم', pack: 'كرتون ١٠ حبات', price: '٩٥.٠٠', badge: '', image: [0, 0] },
-  { id: 5, name: 'بطاطس مقلية', description: 'بطاطس مقرمشة · ٢.٥ كجم', pack: 'كرتون ٤ أكياس', price: '٢٢.٠٠', badge: '', image: [0, 4] },
+export const products: Product[] = [
+  { id: 1, name: 'زيت زيتون', description: 'زيت نباتي نقي · ١ لتر', pack: 'كرتون ١٢ حبة', packagingUnit: 'كرتون', categoryId: 'food', wholesalePrice: 58, retailPrice: 69, minimumOrderQuantity: 1, expiryDate: '2027-12-31', supplier: 'مورد المواد الغذائية', discountPercent: 0, badge: 'الأكثر مبيعاً', image: [0, 5] },
+  { id: 2, name: 'مسحوق غسيل', description: 'قوة تنظيف فائقة · ٢.٥ كجم', pack: 'كرتون ٤ حبات', packagingUnit: 'كرتون', categoryId: 'cleaning', wholesalePrice: 95, retailPrice: 119, minimumOrderQuantity: 1, expiryDate: '2028-06-30', supplier: 'مورد المنظفات والعناية المنزلية', discountPercent: 20, badge: 'خصم ٢٠٪', image: [1, 1] },
+  { id: 3, name: 'مناديل وجه', description: 'مناديل ناعمة · ١٠ علب', pack: 'صندوق ٤٨ علبة', packagingUnit: 'صندوق', categoryId: 'paper', wholesalePrice: 42, retailPrice: 55, minimumOrderQuantity: 1, expiryDate: '2028-12-31', supplier: 'مورد الورقيات', discountPercent: 12, badge: 'عرض كميات', image: [0, 3] },
+  { id: 4, name: 'دجاج مجمد', description: 'دجاج طازج مجمد · ١٠٠٠ جم', pack: 'كرتون ١٠ حبات', packagingUnit: 'كرتون', categoryId: 'frozen', wholesalePrice: 95, retailPrice: 120, minimumOrderQuantity: 1, expiryDate: '2027-08-15', supplier: 'مورد المنتجات المجمدة', discountPercent: 0, badge: '', image: [0, 0] },
+  { id: 5, name: 'بطاطس مقلية', description: 'بطاطس مقرمشة · ٢.٥ كجم', pack: 'كرتون ٤ أكياس', packagingUnit: 'كرتون', categoryId: 'frozen', wholesalePrice: 22, retailPrice: 30, minimumOrderQuantity: 1, expiryDate: '2027-10-31', supplier: 'مورد المنتجات المجمدة', discountPercent: 0, badge: '', image: [0, 4] },
+  { id: 6, name: 'أرز بسمتي', description: 'أرز بسمتي فاخر · ١٠ كجم', pack: 'كيس ١٠ كجم', packagingUnit: 'كيس', categoryId: 'food', wholesalePrice: 148, retailPrice: 175, minimumOrderQuantity: 1, expiryDate: '2027-09-30', supplier: 'مورد المواد الغذائية', discountPercent: 10, badge: 'خصم ١٠٪', image: [1, 0] },
+  { id: 7, name: 'حليب طويل الأجل', description: 'حليب كامل الدسم · ١ لتر', pack: 'كرتون ١٢ عبوة', packagingUnit: 'كرتون', categoryId: 'dairy', wholesalePrice: 108, retailPrice: 132, minimumOrderQuantity: 1, expiryDate: '2027-05-20', supplier: 'مورد الألبان', discountPercent: 0, badge: '', image: [1, 2] },
+  { id: 8, name: 'مياه شرب', description: 'مياه نقية · ٣٣٠ مل', pack: 'صندوق ٤٠ عبوة', packagingUnit: 'صندوق', categoryId: 'drinks', wholesalePrice: 45, retailPrice: 58, minimumOrderQuantity: 1, expiryDate: '2028-05-31', supplier: 'مورد المشروبات', discountPercent: 0, badge: '', image: [1, 3] },
+  { id: 9, name: 'أطباق بلاستيكية', description: 'أطباق للاستخدام الواحد · ٥٠ حبة', pack: 'كرتون ٢٠ عبوة', packagingUnit: 'كرتون', categoryId: 'plastic', wholesalePrice: 36, retailPrice: 49, minimumOrderQuantity: 1, expiryDate: '2030-12-31', supplier: 'مورد مواد التغليف', discountPercent: 0, badge: '', image: [0, 2] },
+  { id: 10, name: 'عبوات حفظ الطعام', description: 'عبوات عملية للمطاعم · ٧٥٠ مل', pack: 'كرتون ١٠٠ عبوة', packagingUnit: 'كرتون', categoryId: 'restaurant', wholesalePrice: 82, retailPrice: 104, minimumOrderQuantity: 1, expiryDate: '2030-12-31', supplier: 'مورد مستلزمات المطاعم', discountPercent: 15, badge: 'عرض كميات', image: [1, 5] },
+  { id: 11, name: 'شامبو يومي', description: 'تركيبة لطيفة · ٤٠٠ مل', pack: 'كرتون ١٢ عبوة', packagingUnit: 'كرتون', categoryId: 'personal-care', wholesalePrice: 54, retailPrice: 68, minimumOrderQuantity: 1, expiryDate: '2028-10-31', supplier: 'مورد العناية الشخصية', discountPercent: 0, badge: '', image: [1, 1] },
 ]
 
-const brands = ['المراعي', 'Tide', 'Persil', 'LUX', 'Nestlé', 'Sadia', 'فانيس', 'PINAR', 'Maggi']
+export const brands = ['المراعي', 'Tide', 'Persil', 'LUX', 'Nestlé', 'Sadia', 'فانيس', 'PINAR', 'Maggi']
 const audiences = ['الأفراد', 'التجار', 'الشركات', 'المطاعم والفنادق']
 
-function CatalogImage({ position, className = '' }: { position: number[]; className?: string }) {
+export function formatSAR(value: number) {
+  return new Intl.NumberFormat('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)
+}
+
+export function CatalogImage({ position, className = '', alt }: { position: [number, number]; className?: string; alt?: string }) {
   const [row, column] = position
   const horizontalPositions = ['0%', '20%', '40%', '60%', '80%', '100%']
   return (
     <div
-      aria-hidden="true"
+      aria-hidden={alt ? undefined : true}
+      aria-label={alt}
       className={`catalog-image ${className}`}
+      role={alt ? 'img' : undefined}
       style={{ backgroundPosition: `${horizontalPositions[column]} ${row === 0 ? '0%' : '100%'}` }}
     />
   )
@@ -54,27 +97,45 @@ function CatalogImage({ position, className = '' }: { position: number[]; classN
 function BrandMark({ light = false }: { light?: boolean }) {
   if (!light) {
     return (
-      <a href="#home" className="brand-mark brand-mark-image" aria-label="جملة - الصفحة الرئيسية">
+      <Link to="/" className="brand-mark brand-mark-image" aria-label="جملة - الصفحة الرئيسية">
         <img
           src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20261108-WA0005-huqzxE3Rx26QlmTh4TD9FYqtOoJxJA.jpg"
           alt="جملة، منصة البيع بالجملة والمواد الغذائية"
           fetchPriority="high"
         />
-      </a>
+      </Link>
     )
   }
 
   return (
-    <a href="#home" className="brand-mark brand-mark-light" aria-label="جملة - الصفحة الرئيسية">
+    <Link to="/" className="brand-mark brand-mark-light" aria-label="جملة - الصفحة الرئيسية">
       <span className="brand-word">جملة<span className="brand-leaf" aria-hidden="true" /></span>
       <span className="brand-caption">منصة البيع بالجملة والتوريد المباشر</span>
-    </a>
+    </Link>
   )
 }
 
-function Header({ cartCount, query, onSearch }: { cartCount: number; query: string; onSearch: (value: string) => void }) {
+export function Header({ cartCount }: { cartCount: number }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const navigation = ['الرئيسية', 'الأقسام', 'عروض خاصة', 'الموردون', 'من نحن', 'تواصل معنا']
+  const [query, setQuery] = useState('')
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
+  useEffect(() => setMobileMenuOpen(false), [pathname])
+  const navigation = [
+    { label: 'الرئيسية', to: '/', end: true },
+    { label: 'الأقسام', to: '/categories' },
+    { label: 'عروض خاصة', to: '/offers' },
+    { label: 'الموردون', to: '/suppliers' },
+    { label: 'من نحن', to: '/about' },
+    { label: 'تواصل معنا', to: '/contact' },
+  ]
+
+  function handleSearch(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const search = query.trim()
+    navigate(search ? `/categories?search=${encodeURIComponent(search)}` : '/categories')
+    setMobileMenuOpen(false)
+  }
 
   return (
     <header className="site-header" id="home">
@@ -83,36 +144,36 @@ function Header({ cartCount, query, onSearch }: { cartCount: number; query: stri
           <span><Truck aria-hidden="true" /> توصيل مباشر من المورد</span>
           <span><ShieldCheck aria-hidden="true" /> ضمان وموثوقية</span>
           <span><BadgePercent aria-hidden="true" /> أسعار خاصة للتجار والشركات</span>
-          <a href="#account">إنشاء حساب جديد <span aria-hidden="true">＋</span></a>
-          <a href="#account"><UserRound aria-hidden="true" /> تسجيل الدخول</a>
+          <Link to="/suppliers#register">تسجيل مورد جديد <span aria-hidden="true">＋</span></Link>
+          <Link to="/contact"><UserRound aria-hidden="true" /> تواصل معنا</Link>
         </div>
       </div>
 
       <div className="header-main shell">
-        <button className="icon-button mobile-menu-button" type="button" aria-label={mobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'} onClick={() => setMobileMenuOpen((open) => !open)}>
+        <button className="icon-button mobile-menu-button" type="button" aria-label={mobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'} aria-expanded={mobileMenuOpen} aria-controls="primary-navigation" onClick={() => setMobileMenuOpen((open) => !open)}>
           {mobileMenuOpen ? <X /> : <Menu />}
         </button>
         <div className="header-brand"><BrandMark /></div>
-        <label className="search-box">
-          <span className="sr-only">ابحث عن منتج أو قسم أو علامة تجارية</span>
-          <input value={query} onChange={(event) => onSearch(event.target.value)} placeholder="ابحث عن منتج، قسم، أو علامة تجارية..." />
-          <button type="button" aria-label="بحث"><Search aria-hidden="true" /></button>
-        </label>
+        <form className="search-box" role="search" onSubmit={handleSearch}>
+          <label className="sr-only" htmlFor="store-search">ابحث عن منتج أو قسم أو علامة تجارية</label>
+          <input id="store-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ابحث عن منتج، قسم، أو علامة تجارية..." />
+          <button type="submit" aria-label="بحث"><Search aria-hidden="true" /></button>
+        </form>
         <div className="header-actions">
-          <button className="cart-button" type="button" aria-label={`سلة المشتريات، ${cartCount} منتجات`}>
+          <Link className="cart-button" to="/cart" aria-label={`سلة المشتريات، ${cartCount} منتجات`}>
             <span className="cart-count">{cartCount}</span>
             <ShoppingCart aria-hidden="true" />
             <span>سلة المشتريات</span>
-          </button>
+          </Link>
         </div>
       </div>
 
-      <nav className={`main-nav${mobileMenuOpen ? ' nav-open' : ''}`} aria-label="التنقل الرئيسي">
+      <nav id="primary-navigation" className={`main-nav${mobileMenuOpen ? ' nav-open' : ''}`} aria-label="التنقل الرئيسي">
         <div className="nav-inner shell">
-          {navigation.map((item, index) => (
-            <a key={item} href={index === 1 ? '#categories' : index === 2 ? '#products' : index === 5 ? '#footer' : '#home'} onClick={() => setMobileMenuOpen(false)}>
-              {item}{index === 1 && <ChevronDown aria-hidden="true" />}
-            </a>
+          {navigation.map(({ label, to, end }) => (
+            <NavLink key={to} to={to} end={end} onClick={() => setMobileMenuOpen(false)}>
+              {label}{label === 'الأقسام' && <ChevronDown aria-hidden="true" />}
+            </NavLink>
           ))}
         </div>
       </nav>
@@ -128,14 +189,14 @@ function Hero() {
         <p className="hero-eyebrow">جملة كل بيت • بالكرتون أو بالحبة</p>
         <h1 id="hero-title">جملة.. كل احتياجاتك<br /><span>بالجملة</span></h1>
         <p className="hero-description">من المواد الغذائية إلى المجمدات، نوفر لك أفضل المنتجات بأفضل الأسعار.</p>
-        <a className="hero-cta" href="#products">تسوق الآن <ArrowLeft aria-hidden="true" /></a>
+          <Link className="hero-cta" to="/categories">تسوق الآن <ArrowLeft aria-hidden="true" /></Link>
       </div>
       <aside className="audience-card" aria-label="تسوق حسب احتياجك">
         <p>تسوق حسب احتياجك</p>
         {audiences.map((audience, index) => (
-          <a href="#categories" key={audience} className="audience-link">
+          <Link to="/categories" key={audience} className="audience-link">
             <span>{audience}</span><span className="audience-icon" aria-hidden="true">{index + 1}</span>
-          </a>
+          </Link>
         ))}
       </aside>
       <div className="hero-dots" aria-hidden="true"><i /><i /><i /></div>
@@ -143,11 +204,11 @@ function Hero() {
   )
 }
 
-function SectionHeading({ title, action }: { title: string; action?: string }) {
+export function SectionHeading({ title, action }: { title: string; action?: string }) {
   return (
     <div className="section-heading">
       <h2>{title}</h2>
-      {action && <a href="#products">{action}<ChevronLeft aria-hidden="true" /></a>}
+      {action && <Link to="/offers">{action}<ChevronLeft aria-hidden="true" /></Link>}
     </div>
   )
 }
@@ -157,14 +218,14 @@ function Categories() {
     <section className="categories-section shell" id="categories" aria-labelledby="categories-title">
       <SectionHeading title="أقسام جملة الرئيسية" />
       <div className="category-grid">
-        {categories.map((category) => (
-          <article className="category-card" key={category.name}>
-            <a href="#products" className="category-link" aria-label={`تصفح قسم ${category.name}`}>
-              <CatalogImage position={category.image} className="category-art" />
+        {categories.slice(0, 5).map((category) => (
+          <article className="category-card" key={category.id}>
+            <Link to={`/categories?category=${category.id}`} className="category-link" aria-label={`تصفح قسم ${category.name}`}>
+              <CatalogImage position={category.image} className="category-art" alt={`صورة قسم ${category.name}`} />
               <div className="category-title-row"><h3>{category.name}</h3><span className="category-count">{category.count}</span></div>
               <p>{category.detail}</p>
               <span className="category-action">تصفح القسم <ArrowLeft aria-hidden="true" /></span>
-            </a>
+            </Link>
           </article>
         ))}
       </div>
@@ -192,35 +253,38 @@ function Benefits() {
   )
 }
 
-function ProductCard({ product, isFavorite, onFavorite, onAdd }: {
-  product: (typeof products)[number]
-  isFavorite: boolean
-  onFavorite: (id: number) => void
-  onAdd: (name: string) => void
+export function ProductCard({ product, isFavorite = false, onFavorite, onAdd }: {
+  product: Product
+  isFavorite?: boolean
+  onFavorite?: (id: number) => void
+  onAdd: (product: Product, quantity?: number) => void
 }) {
   return (
     <article className="product-card">
       <div className="product-image-wrap">
-        <CatalogImage position={product.image} className="product-image" />
-        <button className={`favorite-button${isFavorite ? ' is-favorite' : ''}`} type="button" aria-label={isFavorite ? `إزالة ${product.name} من المفضلة` : `إضافة ${product.name} للمفضلة`} aria-pressed={isFavorite} onClick={() => onFavorite(product.id)}>
-          <Heart aria-hidden="true" />
-        </button>
-        {product.badge && <span className={`product-badge${product.badge === 'خصم خاص' ? ' badge-discount' : ''}`}>{product.badge}</span>}
+        <Link to={`/product/${product.id}`} className="product-image-link" aria-label={`عرض تفاصيل ${product.name}`}>
+          <CatalogImage position={product.image} className="product-image" alt={`صورة ${product.name}`} />
+        </Link>
+        {onFavorite && (
+          <button className={`favorite-button${isFavorite ? ' is-favorite' : ''}`} type="button" aria-label={isFavorite ? `إزالة ${product.name} من المفضلة` : `إضافة ${product.name} للمفضلة`} aria-pressed={isFavorite} onClick={() => onFavorite(product.id)}>
+            <Heart aria-hidden="true" />
+          </button>
+        )}
+        {product.badge && <span className={`product-badge${product.discountPercent > 0 ? ' badge-discount' : ''}`}>{product.badge}</span>}
       </div>
       <div className="product-info">
         <p className="product-description">{product.description}</p>
-        <h3>{product.name}</h3>
+        <h3><Link to={`/product/${product.id}`}>{product.name}</Link></h3>
         <span className="product-pack">{product.pack}</span>
-        <div className="product-price"><strong>{product.price} <small>ر.س</small></strong><span>شامل الضريبة</span></div>
-        <button className="add-to-cart" type="button" onClick={() => onAdd(product.name)}><ShoppingBasket aria-hidden="true" /> أضف إلى السلة</button>
+        <div className="product-price"><strong>{formatSAR(product.wholesalePrice)} <small>ر.س</small></strong><span>سعر الجملة</span></div>
+        <button className="add-to-cart" type="button" onClick={() => onAdd(product, product.minimumOrderQuantity)}><ShoppingBasket aria-hidden="true" /> أضف إلى السلة</button>
       </div>
     </article>
   )
 }
 
-function FeaturedProducts({ query, onAdd }: { query: string; onAdd: (name: string) => void }) {
+function FeaturedProducts({ onAdd }: { onAdd: (product: Product, quantity?: number) => void }) {
   const [favorites, setFavorites] = useState<number[]>([])
-  const visibleProducts = useMemo(() => products.filter((product) => product.name.includes(query.trim())), [query])
 
   function toggleFavorite(id: number) {
     setFavorites((current) => current.includes(id) ? current.filter((favorite) => favorite !== id) : [...current, id])
@@ -229,13 +293,9 @@ function FeaturedProducts({ query, onAdd }: { query: string; onAdd: (name: strin
   return (
     <section className="products-section shell" id="products" aria-labelledby="products-title">
       <SectionHeading title="عروض مميزة" action="عرض الكل" />
-      {visibleProducts.length > 0 ? (
-        <div className="product-grid">
-          {visibleProducts.map((product) => <ProductCard key={product.id} product={product} isFavorite={favorites.includes(product.id)} onFavorite={toggleFavorite} onAdd={onAdd} />)}
-        </div>
-      ) : (
-        <div className="no-results"><Search aria-hidden="true" /><p>لا توجد منتجات مطابقة لبحثك</p></div>
-      )}
+      <div className="product-grid">
+        {products.slice(0, 5).map((product) => <ProductCard key={product.id} product={product} isFavorite={favorites.includes(product.id)} onFavorite={toggleFavorite} onAdd={onAdd} />)}
+      </div>
     </section>
   )
 }
@@ -252,7 +312,7 @@ function BrandGroup({ decorative = false }: { decorative?: boolean }) {
   )
 }
 
-function Brands() {
+export function Brands() {
   return (
     <section className="brands-section shell" aria-labelledby="brands-title">
       <div className="brands-heading"><h2 id="brands-title">أشهر العلامات التجارية</h2><span>منتجات تثق بها، من موردين نثق بهم</span></div>
@@ -271,40 +331,36 @@ function Brands() {
   )
 }
 
-function Footer() {
+export function Footer() {
   return (
     <footer className="site-footer" id="footer">
       <div className="footer-main shell">
         <div className="footer-about"><BrandMark light /><p>منصة جملة تجمع أفضل الموردين والمنتجات في مكان واحد، لتجعل تجربة التسوق بالجملة أسهل وأسرع.</p><div className="social-links"><a href="#footer" aria-label="منصة إكس">𝕏</a><a href="#footer" aria-label="إنستغرام">◎</a><a href="#footer" aria-label="تيك توك">♪</a><a href="#footer" aria-label="يوتيوب">▶</a></div></div>
-        <div className="footer-column"><h2>روابط سريعة</h2><a href="#home">الرئيسية</a><a href="#categories">الأقسام</a><a href="#products">عروض خاصة</a><a href="#footer">من نحن</a><a href="#footer">تواصل معنا</a></div>
-        <div className="footer-column"><h2>خدمة العملاء</h2><a href="#footer">مركز المساعدة</a><a href="#footer">سياسة الخصوصية</a><a href="#footer">سياسة الاسترجاع</a><a href="#footer">الشروط والأحكام</a></div>
-        <div className="footer-contact"><h2>تواصل معنا</h2><a href="tel:+96659741858"><UserRound aria-hidden="true" /> +966 59 741 4858</a><a href="mailto:info@jumla.sa"><CircleHelp aria-hidden="true" /> info@jumla.sa</a><p><span aria-hidden="true">⌖</span> جدة، المملكة العربية السعودية</p></div>
+        <div className="footer-column"><h2>روابط سريعة</h2><Link to="/">الرئيسية</Link><Link to="/categories">الأقسام</Link><Link to="/offers">عروض خاصة</Link><Link to="/suppliers">الموردون</Link><Link to="/about">من نحن</Link><Link to="/contact">تواصل معنا</Link></div>
+        <div className="footer-column"><h2>خدمة العملاء</h2><Link to="/contact">مركز المساعدة</Link><Link to="/contact">سياسة الخصوصية</Link><Link to="/contact">سياسة الاسترجاع</Link><Link to="/contact">الشروط والأحكام</Link><Link to="/cart">السلة والدفع</Link></div>
+        <div className="footer-contact"><h2>تواصل معنا</h2><a href="tel:+966597414858"><UserRound aria-hidden="true" /> 0597414858</a><a href="https://wa.me/966597414858" target="_blank" rel="noreferrer"><CircleHelp aria-hidden="true" /> واتساب الدعم</a><p><span aria-hidden="true">⌖</span> مستودع جملة، جدة، المملكة العربية السعودية</p></div>
       </div>
-      <div className="footer-bottom shell"><div className="payment-methods" aria-label="طرق الدفع المتاحة"><span>mada</span><span>VISA</span><span>◉</span></div><p>© 2026 منصة جملة. جميع الحقوق محفوظة.</p><a href="#home">جملة.. تسوق بكل سهولة</a></div>
+      <div className="footer-bottom shell"><div className="payment-methods" aria-label="طرق الدفع المتاحة"><span>mada</span><span>VISA</span><span>◉</span></div><p>© 2026 منصة جملة. جميع الحقوق محفوظة.</p><Link to="/">جملة.. تسوق بكل سهولة</Link></div>
     </footer>
   )
 }
 
-export function JumlaStorefront() {
-  const [query, setQuery] = useState('')
-  const [cartCount, setCartCount] = useState(0)
+export function HomePage({ onAdd }: { onAdd: (product: Product, quantity?: number) => void }) {
   const [announcement, setAnnouncement] = useState('')
 
-  function addToCart(name: string) {
-    setCartCount((count) => count + 1)
-    setAnnouncement(`تمت إضافة ${name} إلى السلة`)
+  function addToCart(product: Product, quantity?: number) {
+    onAdd(product, quantity)
+    setAnnouncement(`تمت إضافة ${product.name} إلى السلة`)
     window.setTimeout(() => setAnnouncement(''), 2800)
   }
 
   return (
-    <main dir="rtl">
-      <Header cartCount={cartCount} query={query} onSearch={setQuery} />
+    <main className="home-page" dir="rtl">
       <Hero />
       <Categories />
       <Benefits />
-      <FeaturedProducts query={query} onAdd={addToCart} />
+      <FeaturedProducts onAdd={addToCart} />
       <Brands />
-      <Footer />
       <div className="sr-only" role="status" aria-live="polite">{announcement}</div>
     </main>
   )
