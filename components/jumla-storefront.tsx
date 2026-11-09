@@ -52,8 +52,20 @@ function CatalogImage({ position, className = '' }: { position: number[]; classN
 }
 
 function BrandMark({ light = false }: { light?: boolean }) {
+  if (!light) {
+    return (
+      <a href="#home" className="brand-mark brand-mark-image" aria-label="جملة - الصفحة الرئيسية">
+        <img
+          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20261108-WA0005-huqzxE3Rx26QlmTh4TD9FYqtOoJxJA.jpg"
+          alt="جملة، منصة البيع بالجملة والمواد الغذائية"
+          fetchPriority="high"
+        />
+      </a>
+    )
+  }
+
   return (
-    <a href="#home" className={`brand-mark${light ? ' brand-mark-light' : ''}`} aria-label="جملة - الصفحة الرئيسية">
+    <a href="#home" className="brand-mark brand-mark-light" aria-label="جملة - الصفحة الرئيسية">
       <span className="brand-word">جملة<span className="brand-leaf" aria-hidden="true" /></span>
       <span className="brand-caption">منصة البيع بالجملة والتوريد المباشر</span>
     </a>
@@ -72,7 +84,7 @@ function Header({ cartCount, query, onSearch }: { cartCount: number; query: stri
           <span><ShieldCheck aria-hidden="true" /> ضمان وموثوقية</span>
           <span><BadgePercent aria-hidden="true" /> أسعار خاصة للتجار والشركات</span>
           <a href="#account">إنشاء حساب جديد <span aria-hidden="true">＋</span></a>
-          <a href="#account">تسجيل الدخول <UserRound aria-hidden="true" /></a>
+          <a href="#account"><UserRound aria-hidden="true" /> تسجيل الدخول</a>
         </div>
       </div>
 
@@ -87,7 +99,6 @@ function Header({ cartCount, query, onSearch }: { cartCount: number; query: stri
           <button type="button" aria-label="بحث"><Search aria-hidden="true" /></button>
         </label>
         <div className="header-actions">
-          <a className="account-link" href="#account"><UserRound aria-hidden="true" /><span>حسابي</span></a>
           <button className="cart-button" type="button" aria-label={`سلة المشتريات، ${cartCount} منتجات`}>
             <span className="cart-count">{cartCount}</span>
             <ShoppingCart aria-hidden="true" />
@@ -111,7 +122,7 @@ function Header({ cartCount, query, onSearch }: { cartCount: number; query: stri
 
 function Hero() {
   return (
-    <section className="hero shell" aria-labelledby="hero-title">
+    <section className="hero" aria-labelledby="hero-title">
       <div className="hero-photo" aria-hidden="true" />
       <div className="hero-copy">
         <p className="hero-eyebrow">جملة كل بيت • بالكرتون أو بالحبة</p>
@@ -229,14 +240,31 @@ function FeaturedProducts({ query, onAdd }: { query: string; onAdd: (name: strin
   )
 }
 
+function BrandGroup({ decorative = false }: { decorative?: boolean }) {
+  return (
+    <div className="brand-group" role={decorative ? undefined : 'list'} aria-hidden={decorative || undefined}>
+      {brands.map((brand, index) => (
+        <div key={brand} className={`brand-tile brand-tile-${index}`} role={decorative ? undefined : 'listitem'}>
+          {brand}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function Brands() {
   return (
     <section className="brands-section shell" aria-labelledby="brands-title">
       <div className="brands-heading"><h2 id="brands-title">أشهر العلامات التجارية</h2><span>منتجات تثق بها، من موردين نثق بهم</span></div>
       <div className="brand-strip">
-        <button className="brand-arrow" type="button" aria-label="العلامات السابقة"><ChevronRight aria-hidden="true" /></button>
-        {brands.map((brand, index) => <div key={brand} className={`brand-tile brand-tile-${index}`}>{brand}</div>)}
-        <button className="brand-arrow" type="button" aria-label="العلامات التالية"><ChevronLeft aria-hidden="true" /></button>
+        <span className="brand-arrow" aria-hidden="true"><ChevronRight /></span>
+        <div className="brand-marquee" role="region" aria-label="شريط أشهر العلامات التجارية" aria-roledescription="شريط متحرك" tabIndex={0}>
+          <div className="brand-track">
+            <BrandGroup />
+            <BrandGroup decorative />
+          </div>
+        </div>
+        <span className="brand-arrow" aria-hidden="true"><ChevronLeft /></span>
       </div>
     </section>
   )

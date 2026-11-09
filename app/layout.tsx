@@ -1,6 +1,13 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
+import { Noto_Sans_Arabic } from 'next/font/google'
 import './globals.css'
+
+const arabicFont = Noto_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'جملة | منصة التسوق بالجملة',
@@ -39,7 +46,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className="antialiased">
+      <body className={`${arabicFont.className} antialiased`}>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
