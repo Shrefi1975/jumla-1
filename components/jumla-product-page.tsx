@@ -47,7 +47,7 @@ export function ProductDetailPage({ onAdd }: { onAdd: (product: Product, quantit
       <div className="product-detail-grid">
         <div className="detail-image-panel">
           {product.discountPercent > 0 && <span className="detail-discount">خصم {product.discountPercent}٪ للكميات</span>}
-          <CatalogImage position={product.image} imageUrl={product.imageUrl} className="detail-product-image" alt={`صورة ${product.name}`} />
+          <CatalogImage imageUrl={product.imageUrl} loading="eager" className="detail-product-image" alt={`صورة ${product.name}`} />
         </div>
 
         <section className="product-detail-copy" aria-labelledby="product-title">

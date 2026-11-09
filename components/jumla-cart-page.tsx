@@ -36,7 +36,7 @@ export function CartPage() {
         <section className="cart-lines" aria-label="المنتجات في السلة">
           {lines.map(({ product, quantity }) => (
             <article className="cart-line" key={product.id}>
-              <CatalogImage position={product.image} imageUrl={product.imageUrl} className="cart-line-image" alt={`صورة ${product.name}`} />
+              <CatalogImage imageUrl={product.imageUrl} className="cart-line-image" alt={`صورة ${product.name}`} />
               <div className="cart-line-info"><Link to={`/product/${product.id}`}><h2>{product.name}</h2></Link><p>{product.pack}</p><strong>{formatSAR(product.wholesalePrice)} ر.س / {product.packagingUnit}</strong></div>
               <div className="cart-line-actions">
                 <div className="quantity-stepper compact-stepper" aria-label={`كمية ${product.name}`}>

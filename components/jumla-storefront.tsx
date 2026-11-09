@@ -31,41 +31,27 @@ export function formatSAR(value: number) {
   return new Intl.NumberFormat('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)
 }
 
-export function CatalogImage({ position, className = '', alt, imageUrl }: { position: [number, number]; className?: string; alt?: string; imageUrl?: string }) {
-  const [row, column] = position
-  const horizontalPositions = ['0%', '20%', '40%', '60%', '80%', '100%']
+export function CatalogImage({ className = '', alt, imageUrl, loading = 'lazy' }: { className?: string; alt?: string; imageUrl?: string; loading?: 'eager' | 'lazy' }) {
   return (
-    <div
-      aria-hidden={alt ? undefined : true}
-      aria-label={alt}
-      className={`catalog-image ${className}`}
-      role={alt ? 'img' : undefined}
-      style={{
-        backgroundPosition: imageUrl ? 'center' : `${horizontalPositions[column]} ${row === 0 ? '0%' : '100%'}`,
-        backgroundImage: imageUrl ? `url("${imageUrl}")` : undefined,
-        backgroundSize: imageUrl ? 'cover' : undefined,
-      }}
-    />
+    <div aria-hidden={!imageUrl} className={`catalog-image ${className}`}>
+      {imageUrl && <img src={imageUrl} alt={alt ?? ''} loading={loading} decoding="async" />}
+    </div>
   )
 }
 
 function BrandMark({ light = false }: { light?: boolean }) {
-  if (!light) {
-    return (
-      <Link to="/" className="brand-mark brand-mark-image" aria-label="جملة - الصفحة الرئيسية">
-        <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20261108-WA0005-huqzxE3Rx26QlmTh4TD9FYqtOoJxJA.jpg"
-          alt="جملة، منصة البيع بالجملة والمواد الغذائية"
-          fetchPriority="high"
-        />
-      </Link>
-    )
-  }
-
   return (
-    <Link to="/" className="brand-mark brand-mark-light" aria-label="جملة - الصفحة الرئيسية">
-      <span className="brand-word">جملة<span className="brand-leaf" aria-hidden="true" /></span>
-      <span className="brand-caption">منصة البيع بالجملة والتوريد المباشر</span>
+    <Link
+      to="/"
+      className={`brand-mark brand-mark-image${light ? ' brand-mark-footer' : ''}`}
+      aria-label="جملة - الصفحة الرئيسية"
+    >
+      <img
+        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20261108-WA0005-huqzxE3Rx26QlmTh4TD9FYqtOoJxJA.jpg"
+        alt="جملة، منصة البيع بالجملة والمواد الغذائية"
+        fetchPriority={light ? undefined : 'high'}
+        loading={light ? 'lazy' : 'eager'}
+      />
     </Link>
   )
 }
@@ -178,7 +164,7 @@ function Categories() {
           {categories.slice(0, 5).map((category) => (
             <article className="category-card" key={category.id}>
               <Link to={`/categories?category=${category.id}`} className="category-link" aria-label={`تصفح قسم ${category.name}`}>
-                <CatalogImage position={category.image} className="category-art" alt={`صورة قسم ${category.name}`} />
+                <CatalogImage imageUrl={category.imageUrl} className="category-art" alt={`صورة قسم ${category.name}`} />
                 <div className="category-title-row"><h3>{category.name}</h3><span className="category-count">{category.count}</span></div>
                 <p>{category.detail}</p>
                 <span className="category-action">تصفح القسم <ArrowLeft aria-hidden="true" /></span>
@@ -221,7 +207,7 @@ export function ProductCard({ product, isFavorite = false, onFavorite, onAdd }: 
     <article className="product-card">
       <div className="product-image-wrap">
         <Link to={`/product/${product.id}`} className="product-image-link" aria-label={`عرض تفاصيل ${product.name}`}>
-          <CatalogImage position={product.image} imageUrl={product.imageUrl} className="product-image" alt={`صورة ${product.name}`} />
+          <CatalogImage imageUrl={product.imageUrl} className="product-image" alt={`صورة ${product.name}`} />
         </Link>
         {onFavorite && (
           <button className={`favorite-button${isFavorite ? ' is-favorite' : ''}`} type="button" aria-label={isFavorite ? `إزالة ${product.name} من المفضلة` : `إضافة ${product.name} للمفضلة`} aria-pressed={isFavorite} onClick={() => onFavorite(product.id)}>
@@ -282,7 +268,6 @@ export function Brands() {
         <div className="brand-marquee" role="region" aria-label="شريط أشهر العلامات التجارية" aria-roledescription="شريط متحرك" tabIndex={0}>
           <div className="brand-track">
             <BrandGroup />
-            <BrandGroup decorative />
             <BrandGroup decorative />
           </div>
         </div>

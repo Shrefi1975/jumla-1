@@ -22,7 +22,6 @@ export type Product = {
   supplier: string
   discountPercent: number
   badge: string
-  image: [number, number]
   imageUrl?: string
 }
 
@@ -32,7 +31,7 @@ export type Category = {
   name: string
   count: string
   items: string
-  image: [number, number]
+  imageUrl?: string
   detail: string
 }
 
@@ -73,19 +72,19 @@ export type PlatformSettings = {
   updated_at: string
 }
 
-const categoryArtwork: Record<string, { image: [number, number]; detail: string }> = {
-  frozen: { image: [0, 0], detail: 'دواجن، أسماك، خضروات ومخبوزات مجمدة' },
-  paper: { image: [0, 3], detail: 'مناديل الوجه، رولات المطبخ وورق السفرة' },
-  plastic: { image: [0, 2], detail: 'أدوات الاستخدام الواحد ومواد التغليف' },
-  cleaning: { image: [0, 1], detail: 'منظفات المنزل، المطهرات والعناية' },
-  food: { image: [0, 4], detail: 'الأرز، السكر، الزيوت، المعلبات والمزيد' },
-  drinks: { image: [1, 3], detail: 'مياه وعصائر ومشروبات بكميات تجارية' },
-  dairy: { image: [1, 2], detail: 'منتجات الألبان والحليب طويل الأجل' },
-  restaurant: { image: [1, 4], detail: 'عبوات وأدوات تقديم وتجهيز الطعام' },
-  'personal-care': { image: [1, 1], detail: 'منتجات العناية اليومية للعائلة' },
+const categoryArtwork: Record<string, { imageUrl: string; detail: string }> = {
+  frozen: { imageUrl: '/category-frozen.webp', detail: 'دواجن، أسماك، خضروات ومخبوزات مجمدة' },
+  paper: { imageUrl: '/category-paper.webp', detail: 'مناديل الوجه، رولات المطبخ وورق السفرة' },
+  plastic: { imageUrl: '/category-plastic.webp', detail: 'أدوات الاستخدام الواحد ومواد التغليف' },
+  cleaning: { imageUrl: '/category-cleaning.webp', detail: 'منظفات المنزل، المطهرات والعناية' },
+  food: { imageUrl: '/category-food.webp', detail: 'الأرز، السكر، الزيوت، المعلبات والمزيد' },
+  drinks: { imageUrl: '/category-drinks.webp', detail: 'مياه وعصائر ومشروبات بكميات تجارية' },
+  dairy: { imageUrl: '/category-dairy.webp', detail: 'منتجات الألبان والحليب طويل الأجل' },
+  restaurant: { imageUrl: '/category-restaurant.webp', detail: 'عبوات وأدوات تقديم وتجهيز الطعام' },
+  'personal-care': { imageUrl: '/category-personal-care.webp', detail: 'منتجات العناية اليومية للعائلة' },
 }
 
-const fallbackArtwork = { image: [0, 0] as [number, number], detail: 'منتجات جملة مختارة' }
+const fallbackArtwork = { detail: 'منتجات جملة مختارة' }
 const arabicNumber = new Intl.NumberFormat('ar-SA')
 
 export function formatSAR(value: number) {
@@ -116,6 +115,8 @@ async function fetchMarketplaceCatalog() {
       .select('id,supplier_id,category_id,title,description,packaging_unit,expiry_date,image_url,wholesale_price,retail_price,min_order_quantity,is_active,status,created_at,updated_at')
       .eq('status', 'published')
       .eq('is_active', true)
+      .not('image_url', 'is', null)
+      .neq('image_url', '')
       .order('created_at', { ascending: false }),
     supabase
       .from('categories')
@@ -140,7 +141,6 @@ async function fetchMarketplaceCatalog() {
 
   const products: Product[] = (productsResult.data ?? []).map((row) => {
     const categoryId = String(row.category_id)
-    const artwork = categoryArtwork[String(categoriesResult.data?.find((category) => category.id === categoryId)?.slug)] ?? fallbackArtwork
     const wholesalePrice = Number(row.wholesale_price)
     const retailPrice = Number(row.retail_price)
     const minimumOrderQuantity = Number(row.min_order_quantity)
@@ -164,21 +164,20 @@ async function fetchMarketplaceCatalog() {
       supplier: supplierNames.get(row.supplier_id) ?? 'مورد معتمد',
       discountPercent,
       badge: discountPercent ? `خصم ${arabicNumber.format(discountPercent)}٪` : '',
-      image: artwork.image,
       imageUrl: row.image_url ?? undefined,
     }
   })
 
   const categories: Category[] = (categoriesResult.data ?? []).map((row) => {
-    const artwork = categoryArtwork[row.slug] ?? fallbackArtwork
+    const artwork = categoryArtwork[row.slug]
     return {
       id: row.id,
       slug: row.slug,
       name: row.name_ar,
       count: arabicNumber.format(counts.get(row.id) ?? 0),
       items: 'منتجات',
-      image: artwork.image,
-      detail: row.description || artwork.detail || fallbackArtwork.detail,
+      imageUrl: artwork?.imageUrl,
+      detail: row.description || artwork?.detail || fallbackArtwork.detail,
     }
   })
 

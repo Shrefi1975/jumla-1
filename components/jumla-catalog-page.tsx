@@ -54,7 +54,7 @@ export function CategoriesPage({ onAdd }: { onAdd: (product: Product, quantity?:
             const isSelected = selectedCategory === category.id
             return (
               <button className={`catalog-category-option${isSelected ? ' is-selected' : ''}`} key={category.id} type="button" aria-pressed={isSelected} onClick={() => updateFilter('category', category.id)}>
-                <CatalogImage position={category.image} className="catalog-category-image" alt={`صورة قسم ${category.name}`} />
+                <CatalogImage imageUrl={category.imageUrl} className="catalog-category-image" alt={`صورة قسم ${category.name}`} />
                 <span className="catalog-category-copy"><strong>{category.name}</strong><small>عدد المنتجات: {new Intl.NumberFormat('ar-SA').format(itemCount)}</small></span>
               </button>
             )

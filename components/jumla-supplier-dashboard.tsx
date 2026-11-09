@@ -149,7 +149,7 @@ function SupplierWorkspace({ user, supplier }: { user: DashboardUser; supplier: 
         if (uploadError) throw new Error('تعذر رفع الصورة. تحقق من اتصالك ثم حاول مجدداً.')
         uploadedImagePath = path
         imageUrl = supabase.storage.from('product-images').getPublicUrl(path).data.publicUrl
-      } else if (!editing) {
+      } else if (!imageUrl) {
         throw new Error('أضف صورة للمنتج قبل الإرسال.')
       }
 
@@ -218,7 +218,7 @@ function SupplierWorkspace({ user, supplier }: { user: DashboardUser; supplier: 
           <label className="management-field"><span>سعر الجملة <small>ر.س</small></span><input name="wholesale_price" type="number" inputMode="decimal" min="0.01" step="0.01" required defaultValue={editing ? Number(editing.wholesale_price) : ''} /></label>
           <label className="management-field"><span>سعر التجزئة <small>ر.س</small></span><input name="retail_price" type="number" inputMode="decimal" min="0.01" step="0.01" required defaultValue={editing ? Number(editing.retail_price) : ''} /></label>
           <label className="management-field"><span>الحد الأدنى للطلب</span><input name="min_order_quantity" type="number" inputMode="numeric" min="1" step="1" required defaultValue={editing?.min_order_quantity ?? 1} /></label>
-          <label className="management-field management-upload-field"><span>صورة المنتج {editing ? <small>يمكن تركها دون تغيير</small> : null}</span><span className="management-upload-control"><ImagePlus aria-hidden="true" /><span>{editing?.image_url ? 'اختر صورة بديلة' : 'اختر صورة من جهازك'}</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp" required={!editing} /></span><small>تُقص إلى 1200 × 900 بصيغة WebP، والحد الأقصى بعد الضغط 5 ميجابايت.</small></label>
+          <label className="management-field management-upload-field"><span>صورة المنتج <small>{editing?.image_url ? 'يمكن تركها دون تغيير' : 'مطلوبة'}</small></span><span className="management-upload-control"><ImagePlus aria-hidden="true" /><span>{editing?.image_url ? 'اختر صورة بديلة' : 'اختر صورة من جهازك'}</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp" required={!editing?.image_url} /></span><small>تُقص إلى 1200 × 900 بصيغة WebP، والحد الأقصى بعد الضغط 5 ميجابايت.</small></label>
           {(formError || formMessage) && <p className={`management-alert form-full ${formError ? 'is-error' : 'is-success'}`} role={formError ? 'alert' : 'status'}>{formError ? <AlertCircle aria-hidden="true" /> : <Check aria-hidden="true" />}{formError || formMessage}</p>}
           <button className="management-primary-button form-full" type="submit" disabled={isSubmitting}>{isSubmitting ? 'جارٍ الحفظ...' : editing ? 'حفظ التعديلات وإرسالها للمراجعة' : 'إرسال المنتج للمراجعة'}</button>
         </form>
