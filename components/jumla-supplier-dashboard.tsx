@@ -48,7 +48,7 @@ function DashboardShell({ children, companyName }: { children: React.ReactNode; 
 
   async function signOut() {
     await createClient().auth.signOut()
-    router.replace('/auth/login')
+    router.replace('/login')
     router.refresh()
   }
 
@@ -83,8 +83,8 @@ export function SupplierDashboard() {
   const { user, isLoading, error } = useCurrentUser()
 
   if (isLoading) return <LoadingState />
-  if (error) return <AccessState title="تعذر التحقق من الجلسة" description="حدّث الصفحة أو سجّل الدخول من جديد." action={<Link className="management-primary-button" href="/auth/login">تسجيل الدخول</Link>} />
-  if (!user) return <AccessState title="سجّل الدخول للمتابعة" description="مساحة العمل متاحة للموردين المعتمدين فقط." action={<Link className="management-primary-button" href="/auth/login?next=%2Fsupplier%2Fdashboard">دخول المورد</Link>} />
+  if (error) return <AccessState title="تعذر التحقق من الجلسة" description="حدّث الصفحة أو سجّل الدخول من جديد." action={<Link className="management-primary-button" href="/login">تسجيل الدخول</Link>} />
+  if (!user) return <AccessState title="سجّل الدخول للمتابعة" description="مساحة العمل متاحة للموردين المعتمدين فقط." action={<Link className="management-primary-button" href="/login?next=%2Fsupplier%2Fdashboard">دخول المورد</Link>} />
 
   return <SupplierStatusGate user={user} />
 }
@@ -94,7 +94,7 @@ function SupplierStatusGate({ user }: { user: DashboardUser }) {
 
   if (isLoading) return <LoadingState />
   if (error) return <AccessState title="تعذر تحميل ملف المورد" description="لم نتمكن من قراءة بيانات المورد. حاول مرة أخرى بعد تحديث الصفحة." />
-  if (!supplier) return <AccessState title="لا يوجد طلب مورد لهذا الحساب" description="أنشئ طلب انضمام للموردين باستخدام البريد نفسه." action={<Link className="management-primary-button" href="/auth/sign-up">طلب الانضمام</Link>} />
+  if (!supplier) return <AccessState title="لا يوجد طلب مورد لهذا الحساب" description="أنشئ طلب انضمام للموردين باستخدام البريد نفسه." action={<Link className="management-primary-button" href="/register">طلب الانضمام</Link>} />
   if (supplier.status !== 'approved') {
     const rejected = supplier.status === 'rejected'
     return <AccessState title={rejected ? 'طلب المورد غير معتمد' : 'طلبك قيد المراجعة'} description={rejected ? 'تواصل مع فريق جملة لمعرفة الخطوات التالية.' : 'سنفعّل لوحة المنتجات بعد اعتماد بيانات المنشأة. لا يمكن إضافة منتجات قبل الموافقة.'} action={<Link className="management-secondary-button" href="/">العودة للمتجر</Link>} />

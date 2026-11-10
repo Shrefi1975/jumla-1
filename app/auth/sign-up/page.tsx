@@ -42,13 +42,11 @@ export default function SupplierSignUpPage() {
 
       if (error) {
         const message = error.message.toLowerCase()
-        setErrorMessage(message.includes('already registered')
-          ? 'هذا البريد مسجّل بالفعل. يمكنك تسجيل الدخول بدلاً من ذلك.'
-          : message.includes('password')
-            ? 'اختر كلمة مرور أقوى من 8 أحرف.'
-            : message.includes('rate limit') || message.includes('too many requests')
-              ? 'تم تجاوز عدد رسائل التأكيد المسموح به مؤقتاً. حاول بعد قليل.'
-              : 'تعذر إرسال طلبك الآن. تحقق من البيانات وحاول مجدداً.')
+        setErrorMessage(error.code === 'weak_password' || message.includes('password')
+          ? 'اختر كلمة مرور أقوى من 8 أحرف.'
+          : error.status === 429 || error.code === 'over_email_send_rate_limit' || message.includes('rate limit')
+            ? 'تم تجاوز عدد رسائل التأكيد المسموح به مؤقتاً. حاول بعد قليل.'
+            : 'تعذر إنشاء الحساب بهذه البيانات. راجعها وحاول مجدداً، أو جرّب تسجيل الدخول إذا كان لديك حساب.')
         return
       }
 
@@ -72,7 +70,7 @@ export default function SupplierSignUpPage() {
             <p className="management-eyebrow">استلمنا طلبك</p>
             <h1 id="signup-success-title">تحقق من بريدك الإلكتروني</h1>
             <p>أرسلنا رسالة تأكيد إلى <strong dir="ltr">{email}</strong>. بعد تأكيد البريد، سيبقى حساب المورد قيد المراجعة حتى تتم الموافقة عليه.</p>
-            <Link className="management-primary-button" href="/auth/login">الانتقال لتسجيل الدخول</Link>
+            <Link className="management-primary-button" href="/login">الانتقال لتسجيل الدخول</Link>
           </div>
         </section>
       </main>
@@ -124,7 +122,7 @@ export default function SupplierSignUpPage() {
           <p className="management-form-note form-full">لن تظهر منتجاتك للمتسوقين قبل اعتماد طلب المورد وموافقة المشرف على كل منتج.</p>
           <button className="management-primary-button form-full" type="submit" disabled={isSubmitting}>{isSubmitting ? 'جارٍ إرسال الطلب...' : 'إرسال طلب الانضمام'}</button>
         </form>
-        <div className="jumla-auth-links"><p>لديك حساب؟ <Link href="/auth/login">تسجيل الدخول</Link></p><Link href="/" className="management-text-link">العودة للمتجر <ArrowLeft aria-hidden="true" /></Link></div>
+        <div className="jumla-auth-links"><p>لديك حساب؟ <Link href="/login">تسجيل الدخول</Link></p><Link href="/" className="management-text-link">العودة للمتجر <ArrowLeft aria-hidden="true" /></Link></div>
       </section>
     </main>
   )

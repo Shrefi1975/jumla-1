@@ -9,7 +9,7 @@ export default function AuthErrorPage() {
         <p className="management-eyebrow">تعذر التحقق</p>
         <h1 id="auth-error-title">انتهت صلاحية رابط التأكيد أو لم يعد صالحاً</h1>
         <p>اطلب رابطاً جديداً أو ارجع إلى تسجيل الدخول للمحاولة مرة أخرى.</p>
-        <Link className="management-primary-button" href="/auth/login">العودة إلى الدخول <ArrowLeft aria-hidden="true" /></Link>
+        <Link className="management-primary-button" href="/login">العودة إلى الدخول <ArrowLeft aria-hidden="true" /></Link>
       </section>
     </main>
   )

@@ -5,6 +5,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
   BadgePercent,
+  Building2,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -16,8 +17,10 @@ import {
   ShieldCheck,
   ShoppingBasket,
   ShoppingCart,
+  Store,
   Truck,
   UserRound,
+  Utensils,
   X,
 } from 'lucide-react'
 import { getWhatsAppUrl, useMarketplaceCatalog, type Category, type Product } from '@/lib/marketplace'
@@ -25,7 +28,13 @@ import { getWhatsAppUrl, useMarketplaceCatalog, type Category, type Product } fr
 export type { Category, Product } from '@/lib/marketplace'
 
 export const brands = ['المراعي', 'Tide', 'Persil', 'LUX', 'Nestlé', 'Sadia', 'فانيس', 'PINAR', 'Maggi']
-const audiences = ['الأفراد', 'التجار', 'الشركات', 'المطاعم والفنادق']
+
+const heroAudiences = [
+  { id: 'individuals', label: 'الأفراد', icon: UserRound },
+  { id: 'traders', label: 'التجار', icon: Store },
+  { id: 'companies', label: 'الشركات', icon: Building2 },
+  { id: 'hospitality', label: 'المطاعم والفنادق', icon: Utensils },
+]
 
 export function formatSAR(value: number) {
   return new Intl.NumberFormat('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)
@@ -85,8 +94,8 @@ export function Header({ cartCount }: { cartCount: number }) {
           <span><Truck aria-hidden="true" /> توصيل مباشر من المورد</span>
           <span><ShieldCheck aria-hidden="true" /> ضمان وموثوقية</span>
           <span><BadgePercent aria-hidden="true" /> أسعار خاصة للتجار والشركات</span>
-          <a href="/auth/sign-up">تسجيل مورد جديد <span aria-hidden="true">＋</span></a>
-          <Link to="/contact"><UserRound aria-hidden="true" /> تواصل معنا</Link>
+          <a href="/register">قدّم طلب انضمام <span aria-hidden="true">＋</span></a>
+          <a href="/login"><UserRound aria-hidden="true" /> تسجيل الدخول</a>
         </div>
       </div>
 
@@ -125,22 +134,33 @@ export function Header({ cartCount }: { cartCount: number }) {
 function Hero() {
   return (
     <section className="hero" aria-labelledby="hero-title">
-      <div className="hero-photo" aria-hidden="true" />
+      <img
+        className="hero-banner-image"
+        src="/jumla-hero-generated.png"
+        alt="عربة تسوق معدنية محملة بمنتجات غذائية داخل مستودع جملة"
+        width={1968}
+        height={544}
+        fetchPriority="high"
+      />
+      <div className="hero-shade" aria-hidden="true" />
       <div className="hero-copy">
-        <p className="hero-eyebrow">جملة كل بيت • بالكرتون أو بالحبة</p>
-        <h1 id="hero-title">جملة.. كل احتياجاتك<br /><span>بالجملة</span></h1>
-        <p className="hero-description">من المواد الغذائية إلى المجمدات، نوفر لك أفضل المنتجات بأفضل الأسعار.</p>
-          <Link className="hero-cta" to="/categories">تسوق الآن <ArrowLeft aria-hidden="true" /></Link>
+        <p className="hero-wordmark">جملة..</p>
+        <h1 id="hero-title">كل احتياجاتك <span>بالجملة</span></h1>
+        <p className="hero-description">من المواد الغذائية إلى المجمدات</p>
+        <p className="hero-caption">نوفر لك أفضل المنتجات بأفضل الأسعار</p>
+        <Link className="hero-cta" to="/categories">
+          تسوق الآن <ArrowLeft aria-hidden="true" />
+        </Link>
       </div>
-      <aside className="audience-card" aria-label="تسوق حسب احتياجك">
-        <p>تسوق حسب احتياجك</p>
-        {audiences.map((audience, index) => (
-          <Link to="/categories" key={audience} className="audience-link">
-            <span>{audience}</span><span className="audience-icon" aria-hidden="true">{index + 1}</span>
+      <nav className="hero-audiences" aria-label="تسوق حسب نوع العميل">
+        <p>لجميع احتياجاتك</p>
+        {heroAudiences.map(({ id, label, icon: Icon }) => (
+          <Link key={id} className="hero-audience-link" to="/categories">
+            <Icon aria-hidden="true" />
+            <span>{label}</span>
           </Link>
         ))}
-      </aside>
-      <div className="hero-dots" aria-hidden="true"><i /><i /><i /></div>
+      </nav>
     </section>
   )
 }
