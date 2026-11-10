@@ -7,7 +7,9 @@ import { AlertCircle, ArrowLeft, LockKeyhole, Mail, Store } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 function safeNextPath(value: string | null) {
-  return value?.startsWith('/') && !value.startsWith('//') ? value : '/supplier/dashboard'
+  return value?.startsWith('/') && !value.startsWith('//') && !value.startsWith('/admin')
+    ? value
+    : '/supplier/dashboard'
 }
 
 export default function LoginPage() {
@@ -23,7 +25,8 @@ export default function LoginPage() {
     setIsSubmitting(true)
 
     try {
-      const { error } = await createClient().auth.signInWithPassword({
+      const supabase = createClient()
+      const { error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
       })
@@ -35,8 +38,15 @@ export default function LoginPage() {
         return
       }
 
+      const { data: isSuperAdmin, error: accessError } = await supabase.rpc('ensure_super_admin_access')
+      if (accessError) {
+        await supabase.auth.signOut()
+        setErrorMessage('تعذر التحقق من صلاحيات الحساب. حاول مرة أخرى.')
+        return
+      }
+
       const requestedNext = new URLSearchParams(window.location.search).get('next')
-      router.replace(safeNextPath(requestedNext))
+      router.replace(isSuperAdmin ? '/admin/dashboard' : safeNextPath(requestedNext))
       router.refresh()
     } catch {
       setErrorMessage('حدث خطأ غير متوقع أثناء تسجيل الدخول. حاول مرة أخرى.')
