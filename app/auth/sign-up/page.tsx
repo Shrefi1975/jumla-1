@@ -23,12 +23,17 @@ export default function SupplierSignUpPage() {
     setIsSubmitting(true)
 
     try {
+      const confirmationUrl = new URL('/auth/callback', window.location.origin)
+      confirmationUrl.searchParams.set('next', '/auth/login')
+      const isLocalDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      const emailRedirectTo = isLocalDevelopment
+        ? process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? confirmationUrl.toString()
+        : confirmationUrl.toString()
       const { error } = await createClient().auth.signUp({
         email: email.trim().toLowerCase(),
         password,
         options: {
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL
-            ?? `${window.location.origin}/auth/callback?next=${encodeURIComponent('/supplier/dashboard')}`,
+          emailRedirectTo,
           data: {
             account_type: 'supplier',
             full_name: fullName.trim(),
