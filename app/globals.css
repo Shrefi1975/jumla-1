@@ -82,24 +82,9 @@ main { overflow: hidden; }
 .nav-inner a:first-child { color: var(--green-800); }
 .nav-inner svg { width: 13px; height: 13px; }
 
-.hero { position: relative; display: grid; direction: ltr; grid-template-columns: minmax(0, 1fr) 230px; align-items: center; min-height: clamp(228px, 27vw, 360px); width: 100%; max-width: none; margin: 0; overflow: hidden; border-radius: 0; background: #064936; color: white; }
-.hero-photo { position: absolute; inset: 0; background-image: linear-gradient(90deg, rgba(0, 50, 37, .12) 12%, rgba(0, 48, 36, .08) 49%, rgba(0, 44, 34, .78) 100%), url('/jumla-hero.webp'); background-size: cover; background-position: center; }
-.hero-copy { position: relative; z-index: 1; grid-column: 1; width: min(540px, 90%); padding: 40px 28px 50px 42px; direction: rtl; text-align: right; }
-.hero-eyebrow { margin: 0 0 10px; color: #f7db82; font-size: 14px; font-weight: 700; }
-.hero-copy h1 { margin: 0; color: white; font-size: clamp(34px, 4vw, 54px); line-height: 1.22; font-weight: 900; letter-spacing: -.8px; }
-.hero-copy h1 span { color: #f8cf54; }
-.hero-description { max-width: 410px; margin: 12px 0 20px; color: rgba(255,255,255,.9); font-size: 16px; line-height: 1.8; }
-.hero-cta { display: inline-flex; align-items: center; gap: 12px; padding: 11px 22px; border-radius: 999px; background: var(--gold); color: #18392e; font-size: 13px; font-weight: 800; transition: transform 160ms ease, background 160ms ease; }
-.hero-cta:hover { transform: translateY(-2px); background: #ffda62; }
-.hero-cta svg { width: 16px; height: 16px; }
-.audience-card { position: relative; z-index: 1; grid-column: 2; display: flex; flex-direction: column; gap: 9px; width: 100%; padding: 18px 15px; border-right: 1px solid rgba(255,255,255,.3); direction: rtl; }
-.audience-card > p { margin: 0 0 3px; color: #f0f5f2; font-size: 14px; font-weight: 700; }
-.audience-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: white; font-size: 13px; font-weight: 700; }
-.audience-link:hover { color: #f7d15e; }
-.audience-icon { display: grid; place-items: center; width: 33px; height: 33px; border: 1px solid rgba(255,255,255,.55); border-radius: 10px; color: #f5d16a; font-size: 11px; }
-.hero-dots { position: absolute; z-index: 2; bottom: 14px; left: 50%; display: flex; gap: 5px; transform: translateX(-50%); }
-.hero-dots i { display: block; width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.55); }
-.hero-dots i:first-child { background: var(--gold); }
+.hero { width: 100%; aspect-ratio: 1048 / 290; overflow: hidden; background: #064936; }
+.hero-banner-link { display: block; width: 100%; }
+.hero-banner-image { display: block; width: 100%; height: auto; aspect-ratio: 1048 / 290; object-fit: contain; }
 
 .categories-section { padding-top: 12px; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; min-height: 30px; margin-bottom: 8px; }
@@ -205,7 +190,6 @@ main { overflow: hidden; }
 .payment-methods span { color: white; font-size: 11px; font-weight: 900; }
 .footer-bottom > a { color: #d0ded7; }
 
-@media (min-width: 1500px) { .hero { min-height: 370px; } }
 @media (max-width: 1050px) {
   .shell, .announcement-inner { width: min(100% - 40px, 900px); }
   .header-main { grid-template-columns: 150px minmax(180px, 1fr) 185px; gap: 16px; }
@@ -246,18 +230,6 @@ main { overflow: hidden; }
   .nav-inner { display: flex; flex-direction: column; align-items: stretch; gap: 0; height: auto; padding: 7px 14px; }
   .nav-inner a { justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f3f1; font-size: 13px; }
   .nav-inner a:last-child { border-bottom: 0; }
-  .hero { grid-template-columns: 1fr; min-height: 420px; border-radius: 0; }
-  .hero-photo { background-image: linear-gradient(180deg, rgba(0,47,35,.72) 0%, rgba(0,52,39,.48) 42%, rgba(0,45,34,.08) 100%), url('/jumla-hero.webp'); background-position: 58% center; }
-  .hero-copy { grid-column: 1; width: 100%; align-self: start; padding: 30px 22px 0; }
-  .hero-eyebrow { font-size: 12px; }
-  .hero-copy h1 { font-size: 37px; }
-  .hero-description { max-width: 330px; margin: 8px 0 14px; font-size: 13px; }
-  .hero-cta { padding: 9px 17px; font-size: 12px; }
-  .audience-card { grid-column: 1; align-self: end; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 28px; padding: 12px 18px; border: 0; background: rgba(0,54,40,.7); }
-  .audience-card > p { grid-column: 1 / -1; font-size: 12px; }
-  .audience-link { justify-content: flex-start; gap: 7px; font-size: 11px; }
-  .audience-icon { width: 27px; height: 27px; }
-  .hero-dots { bottom: 10px; }
   .categories-section { padding-top: 21px; }
   .section-heading { margin-bottom: 12px; }
   .section-heading h2 { font-size: 18px; }
@@ -295,7 +267,6 @@ main { overflow: hidden; }
 }
 @media (max-width: 380px) {
   .shell, .announcement-inner { width: calc(100% - 22px); }
-  .hero-copy h1 { font-size: 32px; }
   .category-link { padding: 8px; }
   .category-art { height: 96px; }
   .product-image-wrap { height: 120px; }

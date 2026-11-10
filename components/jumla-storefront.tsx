@@ -25,7 +25,6 @@ import { getWhatsAppUrl, useMarketplaceCatalog, type Category, type Product } fr
 export type { Category, Product } from '@/lib/marketplace'
 
 export const brands = ['المراعي', 'Tide', 'Persil', 'LUX', 'Nestlé', 'Sadia', 'فانيس', 'PINAR', 'Maggi']
-const audiences = ['الأفراد', 'التجار', 'الشركات', 'المطاعم والفنادق']
 
 export function formatSAR(value: number) {
   return new Intl.NumberFormat('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)
@@ -124,23 +123,17 @@ export function Header({ cartCount }: { cartCount: number }) {
 
 function Hero() {
   return (
-    <section className="hero" aria-labelledby="hero-title">
-      <div className="hero-photo" aria-hidden="true" />
-      <div className="hero-copy">
-        <p className="hero-eyebrow">جملة كل بيت • بالكرتون أو بالحبة</p>
-        <h1 id="hero-title">جملة.. كل احتياجاتك<br /><span>بالجملة</span></h1>
-        <p className="hero-description">من المواد الغذائية إلى المجمدات، نوفر لك أفضل المنتجات بأفضل الأسعار.</p>
-          <Link className="hero-cta" to="/categories">تسوق الآن <ArrowLeft aria-hidden="true" /></Link>
-      </div>
-      <aside className="audience-card" aria-label="تسوق حسب احتياجك">
-        <p>تسوق حسب احتياجك</p>
-        {audiences.map((audience, index) => (
-          <Link to="/categories" key={audience} className="audience-link">
-            <span>{audience}</span><span className="audience-icon" aria-hidden="true">{index + 1}</span>
-          </Link>
-        ))}
-      </aside>
-      <div className="hero-dots" aria-hidden="true"><i /><i /><i /></div>
+    <section className="hero" aria-label="عرض جملة">
+      <Link className="hero-banner-link" to="/categories">
+        <img
+          className="hero-banner-image"
+          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-yn7rxwJRyGEa6JFHKvuDhNUv4UJWv1.png"
+          alt="جملة، كل احتياجاتك بالجملة من المواد الغذائية إلى المجمدات. تسوق الآن. للأفراد والتجار والشركات والمطاعم والفنادق."
+          width={1048}
+          height={290}
+          fetchPriority="high"
+        />
+      </Link>
     </section>
   )
 }
