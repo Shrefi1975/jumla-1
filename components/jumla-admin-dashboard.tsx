@@ -11,7 +11,7 @@ import type { Category, ProductRecord, SupplierRecord } from '@/lib/marketplace'
 type DashboardTab = 'suppliers' | 'products' | 'settings'
 
 function AdminAccessMessage({ title, description, showLogin = false }: { title: string; description: string; showLogin?: boolean }) {
-  return <main className="jumla-auth-page" dir="rtl"><section className="jumla-auth-card jumla-auth-success"><span className="jumla-auth-icon"><ShieldAlert aria-hidden="true" /></span><p className="management-eyebrow">إدارة المنصة</p><h1>{title}</h1><p>{description}</p>{showLogin && <Link className="management-primary-button" href="/auth/login?next=%2Fadmin%2Fdashboard">تسجيل دخول المشرف</Link>}<Link className="management-text-link" href="/">العودة إلى المتجر <ArrowLeft aria-hidden="true" /></Link></section></main>
+  return <main className="jumla-auth-page" dir="rtl"><section className="jumla-auth-card jumla-auth-success"><span className="jumla-auth-icon"><ShieldAlert aria-hidden="true" /></span><p className="management-eyebrow">إدارة المنصة</p><h1>{title}</h1><p>{description}</p>{showLogin && <Link className="management-primary-button" href="/login?next=%2Fadmin%2Fdashboard">تسجيل دخول المشرف</Link>}<Link className="management-text-link" href="/">العودة إلى المتجر <ArrowLeft aria-hidden="true" /></Link></section></main>
 }
 
 function AdminShell({ children, activeTab, onSelectTab }: { children: React.ReactNode; activeTab: DashboardTab; onSelectTab: (tab: DashboardTab) => void }) {
@@ -19,7 +19,7 @@ function AdminShell({ children, activeTab, onSelectTab }: { children: React.Reac
 
   async function signOut() {
     await createClient().auth.signOut()
-    router.replace('/auth/login')
+    router.replace('/login')
     router.refresh()
   }
 

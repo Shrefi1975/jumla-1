@@ -39,7 +39,7 @@ export function SuppliersPage() {
           <p className="page-kicker">انضم إلى جملة</p>
           <h2 id="supplier-registration-title">هل أنت مورّد أو مصنع؟</h2>
           <p>أنشئ حساب منشأتك وقدّم طلب الانضمام من بوابة الموردين. سيبقى الحساب قيد المراجعة حتى اعتماده.</p>
-          <a className="supplier-join-login" href="/auth/login?next=%2Fsupplier%2Fdashboard">لديك حساب؟ تسجيل الدخول</a>
+          <a className="supplier-join-login" href="/login?next=%2Fsupplier%2Fdashboard">لديك حساب؟ تسجيل الدخول</a>
         </div>
         <div className="supplier-form supplier-join-panel">
           <p className="page-kicker">خطوات الانضمام</p>
@@ -48,7 +48,7 @@ export function SuppliersPage() {
             <li>أكّد بريدك الإلكتروني لتفعيل الحساب.</li>
             <li>بعد اعتماد الطلب، أضف منتجاتك وأسعار الجملة.</li>
           </ul>
-          <a className="primary-action form-full-width" href="/auth/sign-up">إنشاء حساب مورد <ArrowLeft aria-hidden="true" /></a>
+          <a className="primary-action form-full-width" href="/register">إنشاء حساب مورد <ArrowLeft aria-hidden="true" /></a>
         </div>
       </section>
     </main>

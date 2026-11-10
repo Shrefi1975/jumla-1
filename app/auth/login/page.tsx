@@ -6,10 +6,17 @@ import { useRouter } from 'next/navigation'
 import { AlertCircle, ArrowLeft, LockKeyhole, Mail, Store } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
-function safeNextPath(value: string | null) {
-  return value?.startsWith('/') && !value.startsWith('//') && !value.startsWith('/admin')
+function safeNextPath(value: string | null, fallbackPath: string) {
+  const pathname = value?.split(/[?#]/, 1)[0] ?? ''
+  const isAuthRoute = pathname === '/login'
+    || pathname === '/register'
+    || pathname === '/supplier/register'
+    || pathname === '/auth'
+    || pathname.startsWith('/auth/')
+
+  return value?.startsWith('/') && !value.startsWith('//') && !value.startsWith('/admin') && !isAuthRoute
     ? value
-    : '/supplier/dashboard'
+    : fallbackPath
 }
 
 export default function LoginPage() {
@@ -26,15 +33,17 @@ export default function LoginPage() {
 
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
       })
 
       if (error) {
-        setErrorMessage(error.message.includes('Email not confirmed')
+        setErrorMessage(error.code === 'email_not_confirmed' || error.message.includes('Email not confirmed')
           ? 'يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول.'
-          : 'تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور ثم حاول مجدداً.')
+          : error.status === 429 || error.code === 'over_request_rate_limit'
+            ? 'محاولات كثيرة خلال وقت قصير. انتظر قليلاً ثم حاول مجدداً.'
+            : 'تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور ثم حاول مجدداً.')
         return
       }
 
@@ -45,8 +54,22 @@ export default function LoginPage() {
         return
       }
 
+      let defaultPath = authData.user.user_metadata?.account_type === 'supplier'
+        ? '/supplier/dashboard'
+        : '/'
+
+      if (!isSuperAdmin && defaultPath !== '/supplier/dashboard') {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('user_id', authData.user.id)
+          .maybeSingle()
+
+        if (profile?.role === 'supplier') defaultPath = '/supplier/dashboard'
+      }
+
       const requestedNext = new URLSearchParams(window.location.search).get('next')
-      router.replace(isSuperAdmin ? '/admin/dashboard' : safeNextPath(requestedNext))
+      router.replace(isSuperAdmin ? '/admin/dashboard' : safeNextPath(requestedNext, defaultPath))
       router.refresh()
     } catch {
       setErrorMessage('حدث خطأ غير متوقع أثناء تسجيل الدخول. حاول مرة أخرى.')
@@ -81,8 +104,8 @@ export default function LoginPage() {
           <button className="management-primary-button" type="submit" disabled={isSubmitting}>{isSubmitting ? 'جارٍ التحقق...' : 'دخول آمن'}</button>
         </form>
         <div className="jumla-auth-links">
-          <p>لست مورّداً بعد؟ <Link href="/auth/sign-up">قدّم طلب انضمام</Link></p>
-          <Link href="/admin/dashboard" className="management-text-link">دخول مشرف المنصة <ArrowLeft aria-hidden="true" /></Link>
+          <p>لست مورّداً بعد؟ <Link href="/register">قدّم طلب انضمام</Link></p>
+          <Link href="/login?next=%2Fadmin%2Fdashboard" className="management-text-link">دخول مشرف المنصة <ArrowLeft aria-hidden="true" /></Link>
         </div>
       </section>
     </main>

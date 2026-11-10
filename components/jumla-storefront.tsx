@@ -85,8 +85,8 @@ export function Header({ cartCount }: { cartCount: number }) {
           <span><Truck aria-hidden="true" /> توصيل مباشر من المورد</span>
           <span><ShieldCheck aria-hidden="true" /> ضمان وموثوقية</span>
           <span><BadgePercent aria-hidden="true" /> أسعار خاصة للتجار والشركات</span>
-          <a href="/auth/sign-up">تسجيل مورد جديد <span aria-hidden="true">＋</span></a>
-          <Link to="/contact"><UserRound aria-hidden="true" /> تواصل معنا</Link>
+          <a href="/register">قدّم طلب انضمام <span aria-hidden="true">＋</span></a>
+          <a href="/login"><UserRound aria-hidden="true" /> تسجيل الدخول</a>
         </div>
       </div>
 
