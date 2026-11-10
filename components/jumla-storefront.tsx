@@ -26,6 +26,13 @@ export type { Category, Product } from '@/lib/marketplace'
 
 export const brands = ['المراعي', 'Tide', 'Persil', 'LUX', 'Nestlé', 'Sadia', 'فانيس', 'PINAR', 'Maggi']
 
+const heroAudiences = [
+  { id: 'individuals', label: 'الأفراد' },
+  { id: 'traders', label: 'التجار' },
+  { id: 'companies', label: 'الشركات' },
+  { id: 'hospitality', label: 'المطاعم والفنادق' },
+]
+
 export function formatSAR(value: number) {
   return new Intl.NumberFormat('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)
 }
@@ -124,16 +131,39 @@ export function Header({ cartCount }: { cartCount: number }) {
 function Hero() {
   return (
     <section className="hero" aria-label="عرض جملة">
-      <Link className="hero-banner-link" to="/categories">
-        <img
-          className="hero-banner-image"
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-yn7rxwJRyGEa6JFHKvuDhNUv4UJWv1.png"
-          alt="جملة، كل احتياجاتك بالجملة من المواد الغذائية إلى المجمدات. تسوق الآن. للأفراد والتجار والشركات والمطاعم والفنادق."
-          width={1048}
-          height={290}
-          fetchPriority="high"
-        />
-      </Link>
+      <img
+        className="hero-banner-image"
+        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-yn7rxwJRyGEa6JFHKvuDhNUv4UJWv1.png"
+        alt="جملة، كل احتياجاتك بالجملة من المواد الغذائية إلى المجمدات."
+        width={1048}
+        height={290}
+        fetchPriority="high"
+      />
+      <nav className="hero-hotspots" aria-label="خيارات التسوق">
+        <Link className="hero-hotspot hero-hotspot--shop" to="/categories" aria-label="تسوق الآن">
+          <span className="sr-only">تسوق الآن</span>
+        </Link>
+        {heroAudiences.map((audience) => (
+          <Link
+            key={audience.id}
+            className={`hero-hotspot hero-hotspot--${audience.id}`}
+            to="/categories"
+            aria-label={`تصفح منتجات ${audience.label}`}
+          />
+        ))}
+      </nav>
+      <nav className="hero-mobile-actions" aria-label="خيارات التسوق">
+        <Link className="hero-mobile-shop" to="/categories">
+          تسوق الآن <ArrowLeft aria-hidden="true" />
+        </Link>
+        <div className="hero-mobile-audiences">
+          {heroAudiences.map((audience) => (
+            <Link key={audience.id} className="hero-mobile-audience" to="/categories">
+              {audience.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
     </section>
   )
 }
