@@ -5,6 +5,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
   BadgePercent,
+  Building2,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -16,8 +17,10 @@ import {
   ShieldCheck,
   ShoppingBasket,
   ShoppingCart,
+  Store,
   Truck,
   UserRound,
+  Utensils,
   X,
 } from 'lucide-react'
 import { getWhatsAppUrl, useMarketplaceCatalog, type Category, type Product } from '@/lib/marketplace'
@@ -27,10 +30,10 @@ export type { Category, Product } from '@/lib/marketplace'
 export const brands = ['المراعي', 'Tide', 'Persil', 'LUX', 'Nestlé', 'Sadia', 'فانيس', 'PINAR', 'Maggi']
 
 const heroAudiences = [
-  { id: 'individuals', label: 'الأفراد' },
-  { id: 'traders', label: 'التجار' },
-  { id: 'companies', label: 'الشركات' },
-  { id: 'hospitality', label: 'المطاعم والفنادق' },
+  { id: 'individuals', label: 'الأفراد', icon: UserRound },
+  { id: 'traders', label: 'التجار', icon: Store },
+  { id: 'companies', label: 'الشركات', icon: Building2 },
+  { id: 'hospitality', label: 'المطاعم والفنادق', icon: Utensils },
 ]
 
 export function formatSAR(value: number) {
@@ -130,39 +133,33 @@ export function Header({ cartCount }: { cartCount: number }) {
 
 function Hero() {
   return (
-    <section className="hero" aria-label="عرض جملة">
+    <section className="hero" aria-labelledby="hero-title">
       <img
         className="hero-banner-image"
-        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-yn7rxwJRyGEa6JFHKvuDhNUv4UJWv1.png"
-        alt="جملة، كل احتياجاتك بالجملة من المواد الغذائية إلى المجمدات."
-        width={1048}
-        height={290}
+        src="/jumla-hero-generated.png"
+        alt="عربة تسوق معدنية محملة بمنتجات غذائية داخل مستودع جملة"
+        width={1968}
+        height={544}
         fetchPriority="high"
       />
-      <nav className="hero-hotspots" aria-label="خيارات التسوق">
-        <Link className="hero-hotspot hero-hotspot--shop" to="/categories" aria-label="تسوق الآن">
-          <span className="sr-only">تسوق الآن</span>
-        </Link>
-        {heroAudiences.map((audience) => (
-          <Link
-            key={audience.id}
-            className={`hero-hotspot hero-hotspot--${audience.id}`}
-            to="/categories"
-            aria-label={`تصفح منتجات ${audience.label}`}
-          />
-        ))}
-      </nav>
-      <nav className="hero-mobile-actions" aria-label="خيارات التسوق">
-        <Link className="hero-mobile-shop" to="/categories">
+      <div className="hero-shade" aria-hidden="true" />
+      <div className="hero-copy">
+        <p className="hero-wordmark">جملة..</p>
+        <h1 id="hero-title">كل احتياجاتك <span>بالجملة</span></h1>
+        <p className="hero-description">من المواد الغذائية إلى المجمدات</p>
+        <p className="hero-caption">نوفر لك أفضل المنتجات بأفضل الأسعار</p>
+        <Link className="hero-cta" to="/categories">
           تسوق الآن <ArrowLeft aria-hidden="true" />
         </Link>
-        <div className="hero-mobile-audiences">
-          {heroAudiences.map((audience) => (
-            <Link key={audience.id} className="hero-mobile-audience" to="/categories">
-              {audience.label}
-            </Link>
-          ))}
-        </div>
+      </div>
+      <nav className="hero-audiences" aria-label="تسوق حسب نوع العميل">
+        <p>لجميع احتياجاتك</p>
+        {heroAudiences.map(({ id, label, icon: Icon }) => (
+          <Link key={id} className="hero-audience-link" to="/categories">
+            <Icon aria-hidden="true" />
+            <span>{label}</span>
+          </Link>
+        ))}
       </nav>
     </section>
   )
