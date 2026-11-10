@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   CircleHelp,
+  CirclePlus,
   CreditCard,
   Heart,
   Menu,
@@ -82,11 +83,15 @@ export function Header({ cartCount }: { cartCount: number }) {
     <header className="site-header" id="home">
       <div className="announcement-bar">
         <div className="announcement-inner">
-          <span><Truck aria-hidden="true" /> توصيل مباشر من المورد</span>
-          <span><ShieldCheck aria-hidden="true" /> ضمان وموثوقية</span>
-          <span><BadgePercent aria-hidden="true" /> أسعار خاصة للتجار والشركات</span>
-          <a href="/auth/sign-up">تسجيل مورد جديد <span aria-hidden="true">＋</span></a>
-          <Link to="/contact"><UserRound aria-hidden="true" /> تواصل معنا</Link>
+          <div className="announcement-benefits" aria-label="مميزات جملة">
+            <span><Truck aria-hidden="true" /> توصيل مباشر من المورد</span>
+            <span><BadgePercent aria-hidden="true" /> أسعار خاصة للتجار والشركات</span>
+            <span><ShieldCheck aria-hidden="true" /> جودة مضمونة</span>
+          </div>
+          <div className="announcement-auth-actions">
+            <Link className="announcement-signup" to="/auth/sign-up"><CirclePlus aria-hidden="true" /> إنشاء حساب جديد</Link>
+            <Link className="announcement-login" to="/auth/login"><UserRound aria-hidden="true" /> تسجيل الدخول</Link>
+          </div>
         </div>
       </div>
 
